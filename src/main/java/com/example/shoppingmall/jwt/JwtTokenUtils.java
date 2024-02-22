@@ -1,0 +1,54 @@
+package com.example.shoppingmall.jwt;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Component;
+
+import java.security.Key;
+import java.time.Instant;
+import java.util.Date;
+
+@Slf4j
+@Component
+public class JwtTokenUtils {
+    // JWT를 만드는 용도의 암호키
+    private final Key signingKey;
+    // JWT를 해석하는 용도의 객체
+    private final JwtParser jwtParser;
+
+    public JwtTokenUtils(@Value("${jwt.secret}") String jwtSecret) {
+        this.signingKey = Keys.hmacShaKeyFor(jwtSecret.getBytes());
+        this.jwtParser = Jwts.parserBuilder()
+                .setSigningKey(this.signingKey)
+                .build();
+    }
+
+    // UserDetails를 받아 JWT로 변환
+    public String generateToken(UserDetails userDetails) {
+        // 호출되었을때 time
+        Instant now = Instant.now();
+        Claims jwtClaims = Jwts.claims()
+                // 사용자 이름
+                .setSubject(userDetails.getUsername())
+                // 발급 시간
+                .setIssuedAt(Date.from(now))
+                // 로그인 한 후 한시간이 지나면 토큰이 만료됨
+                .setExpiration(Date.from(now.plusSeconds((60 * 60))));
+
+        return Jwts.builder()
+                .setClaims(jwtClaims)
+                .signWith(this.signingKey)
+                .compact();
+    }
+
+    // 정상적인 JWT인지 판단
+    public boolean validate(String token) {
+        return false;
+    }
+
+}
