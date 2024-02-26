@@ -51,18 +51,12 @@ public class JpaUserDetailsManager implements UserDetailsManager{
     public void createUser(UserDetails user) {
         if (userExists(user.getUsername()))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-
         try {
             CustomUserDetails userDetails = (CustomUserDetails) user;
             UserEntity newUser = UserEntity.builder()
                     .username(userDetails.getUsername())
                     .password(userDetails.getPassword())
-                    .name(userDetails.getName())
-                    .nickname(userDetails.getNickname())
-                    .age(userDetails.getAge())
-                    .email(userDetails.getEmail())
-                    .phone(userDetails.getPhone())
-                    .authorities(userDetails.getRawAuthorities())
+                    .authorities("ROLE_INACTIVE_USER")
                     .build();
             userRepository.save(newUser);
         } catch (ClassCastException e) {
@@ -73,7 +67,28 @@ public class JpaUserDetailsManager implements UserDetailsManager{
 
     @Override
     public void updateUser(UserDetails user) {
+        // userName으로 user 가져옴
+        Optional<UserEntity> optionalUser = userRepository.findByUsername(user.getUsername());
+        // user가 없으면 예외 발생
+        if (optionalUser.isEmpty())
+            throw new UsernameNotFoundException(user.getUsername());
 
+        CustomUserDetails userDetails = (CustomUserDetails) user;
+        // UPDATE
+        UserEntity target = optionalUser.get();
+        target.setName(userDetails.getName());
+        target.setNickname(userDetails.getNickname());
+        target.setAge(userDetails.getAge());
+        target.setEmail(userDetails.getEmail());
+        target.setPhone(userDetails.getPhone());
+        // 권한 업데이트
+        if (target.getBusinessNumber().isEmpty()) {
+            target.setAuthorities("ROLE_USER");
+        } else {
+            target.setBusinessNumber(userDetails.getBusinessNumber());
+            target.setAuthorities("ROLE_BUSINESS_USER");
+        }
+        userRepository.save(target);
     }
 
     @Override

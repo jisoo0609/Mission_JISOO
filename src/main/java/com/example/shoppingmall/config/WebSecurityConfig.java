@@ -17,9 +17,13 @@ public class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(
                         authHttp -> authHttp
-                                .requestMatchers("/token/issue")
+                                .requestMatchers(
+                                        "/token/issue",
+                                        "/token/validate",
+                                        "/users/create"
+                                )
                                 .permitAll()
-                                .requestMatchers("/token/secure")
+                                .requestMatchers("/users/update")
                                 .authenticated()
                 )
                 .sessionManagement(
