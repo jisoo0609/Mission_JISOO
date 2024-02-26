@@ -1,6 +1,5 @@
 package com.example.shoppingmall.entity;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,19 +13,19 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Builder
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    @Getter
     private Long id;
     private String username;
     private String password;
-
     private String name;    // 사용자 이름
     private String nickname;    // 닉네임
     private Integer age;    // 연령대
     private String email;   // 이메일
     private String phone;   // 전화번호
+    private String businessNumber;
 
     private String authorities;     // 권한
 
@@ -47,12 +46,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return null;
+        return username;
     }
 
     @Override

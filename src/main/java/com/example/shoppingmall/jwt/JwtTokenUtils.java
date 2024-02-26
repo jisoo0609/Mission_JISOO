@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import javax.xml.crypto.dsig.Transform;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
@@ -55,7 +54,7 @@ public class JwtTokenUtils {
             jwtParser.parseClaimsJws(token);
             return true;
         } catch (Exception e) {
-            log.warn("invaild jwt");
+            log.warn("invalid jwt");
         }
         return false;
     }
