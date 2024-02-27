@@ -55,20 +55,11 @@ public class JpaUserDetailsManager implements UserDetailsManager{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         try {
             CustomUserDetails userDetails = (CustomUserDetails) user;
-            UserEntity newUser;
-            if (userDetails.getUsername().equals("admin")) { // 관리자 계정인 경우
-                newUser = UserEntity.builder()
+            UserEntity newUser = UserEntity.builder()
                         .username(userDetails.getUsername())
                         .password(userDetails.getPassword())
-                        .authorities("ROLE_ADMIN") // 관리자 권한 지정
+                        .authorities(userDetails.getRawAuthorities()) // 기본적으로 비활성 사용자 권한 지정
                         .build();
-            } else { // 일반 사용자인 경우
-                newUser = UserEntity.builder()
-                        .username(userDetails.getUsername())
-                        .password(userDetails.getPassword())
-                        .authorities("ROLE_INACTIVE_USER") // 기본적으로 비활성 사용자 권한 지정
-                        .build();
-            }
             userRepository.save(newUser);
         } catch (ClassCastException e) {
             log.error("Failed Cast to: {}", CustomUserDetails.class);

@@ -29,6 +29,7 @@ public class UserService {
 
     // 회원가입
     public void create(UserDto dto) {
+        dto.setAuthorities("ROLE_INACTIVE_USER");
         UserDetails newUser = buildUserDetails(dto);
         manager.createUser(newUser);
     }
@@ -86,6 +87,12 @@ public class UserService {
     }
 
     // 관리자가 사용자 전환 신청 목록 확인
+    public List<UserEntity> checkRequestList() {
+        List<UserEntity> requestList = userRepository.findByBusinessNumberIsNotNull();
+        if (requestList.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        return requestList;
+    }
 
     // UserDto를 UserDetails로 변환하는 메서드
     private UserDetails buildUserDetails(UserDto dto) {

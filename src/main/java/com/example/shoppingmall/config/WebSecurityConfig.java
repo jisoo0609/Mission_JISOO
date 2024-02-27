@@ -27,12 +27,15 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                         "/token/issue",
                                         "/token/validate",
-                                        "/users/register"
+                                        "/users/register",
+                                        "/users/login"
                                 )
                                 .permitAll()
                                 .requestMatchers(
                                         "/users/{id}/update",
                                         "/users/{id}/request")
+                                .authenticated()
+                                .requestMatchers("/admin/list")
                                 .authenticated()
                 )
                 .sessionManagement(sessionManagement ->
