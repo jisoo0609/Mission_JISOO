@@ -1,34 +1,24 @@
 package com.example.shoppingmall;
 
-import com.example.shoppingmall.entity.CustomUserDetails;
-import com.example.shoppingmall.service.JpaUserDetailsManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class AuthenticationFacade {
-    private JpaUserDetailsManager manager;
-    public Authentication getAuth() {
-        return SecurityContextHolder.getContext().getAuthentication();
-    }
-
     // 현재 사용자가 관리자인지 확인
     public boolean isCurrentAdmin() {
-        Authentication authentication = getAuth();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        log.info("authentication: {}", authentication);
         if (authentication != null) {
-            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-            for (GrantedAuthority authority : authorities) {
-                if (authority.getAuthority().equals("ROLE_ADMIN")) {
-                    return true;
-                }
-            }
+            return authentication.getAuthorities().stream()
+                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         }
         return false;
     }
