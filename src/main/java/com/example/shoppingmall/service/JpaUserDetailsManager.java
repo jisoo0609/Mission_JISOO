@@ -1,10 +1,12 @@
 package com.example.shoppingmall.service;
 
+import com.example.shoppingmall.AuthenticationFacade;
 import com.example.shoppingmall.entity.CustomUserDetails;
 import com.example.shoppingmall.entity.UserEntity;
 import com.example.shoppingmall.repo.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -53,11 +55,20 @@ public class JpaUserDetailsManager implements UserDetailsManager{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         try {
             CustomUserDetails userDetails = (CustomUserDetails) user;
-            UserEntity newUser = UserEntity.builder()
-                    .username(userDetails.getUsername())
-                    .password(userDetails.getPassword())
-                    .authorities("ROLE_INACTIVE_USER")
-                    .build();
+            UserEntity newUser;
+            if (userDetails.getUsername().equals("admin")) { // 관리자 계정인 경우
+                newUser = UserEntity.builder()
+                        .username(userDetails.getUsername())
+                        .password(userDetails.getPassword())
+                        .authorities("ROLE_ADMIN") // 관리자 권한 지정
+                        .build();
+            } else { // 일반 사용자인 경우
+                newUser = UserEntity.builder()
+                        .username(userDetails.getUsername())
+                        .password(userDetails.getPassword())
+                        .authorities("ROLE_INACTIVE_USER") // 기본적으로 비활성 사용자 권한 지정
+                        .build();
+            }
             userRepository.save(newUser);
         } catch (ClassCastException e) {
             log.error("Failed Cast to: {}", CustomUserDetails.class);
@@ -82,12 +93,7 @@ public class JpaUserDetailsManager implements UserDetailsManager{
         target.setEmail(userDetails.getEmail());
         target.setPhone(userDetails.getPhone());
         // 권한 업데이트
-        if (target.getBusinessNumber().isEmpty()) {
-            target.setAuthorities("ROLE_USER");
-        } else {
-            target.setBusinessNumber(userDetails.getBusinessNumber());
-            target.setAuthorities("ROLE_BUSINESS_USER");
-        }
+        target.setAuthorities("ROLE_USER");
         userRepository.save(target);
     }
 

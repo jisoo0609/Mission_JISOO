@@ -48,7 +48,7 @@ public class JwtTokenUtils {
                 .compact();
     }
 
-    // 정상적인 JWT인지 판단
+    // 정상적인 JWT인지를 판단하는 메서드
     public boolean validate(String token) {
         try {
             jwtParser.parseClaimsJws(token);

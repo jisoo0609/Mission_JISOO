@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Builder
@@ -36,14 +37,16 @@ public class CustomUserDetails implements UserDetails {
     @Override
     // 권한 부여
     // 비활성 사용자, 일반 사용자, 사업자 사용자, 관리자
-    // 권한: ROLE_INACTIVE_USER, ROLE_USER, ROLE_BUSINESS_USER, ROLE_ADMINISTRATOR
+    // 권한: ROLE_INACTIVE_USER, ROLE_USER, ROLE_BUSINESS_USER, ROLE_ADMIN
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (authorities == null) {
+            return Collections.emptyList(); // authorities가 null인 경우 빈 목록을 반환
+        }
         return Arrays.stream(authorities.split(","))
                 .sorted()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
-
     @Override
     public String getPassword() {
         return password;
