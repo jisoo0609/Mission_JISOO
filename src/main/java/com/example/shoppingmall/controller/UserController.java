@@ -3,7 +3,6 @@ package com.example.shoppingmall.controller;
 import com.example.shoppingmall.dto.UserDto;
 import com.example.shoppingmall.dto.jwt.JwtRequestDto;
 import com.example.shoppingmall.dto.jwt.JwtResponseDto;
-import com.example.shoppingmall.entity.UserEntity;
 import com.example.shoppingmall.jwt.JwtTokenUtils;
 import com.example.shoppingmall.service.UserService;
 import lombok.RequiredArgsConstructor;

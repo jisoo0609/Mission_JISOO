@@ -35,8 +35,12 @@ public class WebSecurityConfig {
                                         "/users/{id}/update",
                                         "/users/{id}/request")
                                 .authenticated()
-                                .requestMatchers("/admin/list")
+                                .requestMatchers(
+                                        "/admin/list",
+                                        "/admin/check",
+                                        "/admin/**")
                                 .authenticated()
+
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

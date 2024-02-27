@@ -6,7 +6,7 @@ import com.example.shoppingmall.entity.UserEntity;
 import com.example.shoppingmall.repo.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -41,6 +42,7 @@ public class JpaUserDetailsManager implements UserDetailsManager{
         return CustomUserDetails.builder()
                 .username(userEntity.getUsername())
                 .password(userEntity.getPassword())
+                .authorities(userEntity.getAuthorities())
                 .name(userEntity.getName())
                 .nickname(userEntity.getNickname())
                 .age(userEntity.getAge())
@@ -51,15 +53,19 @@ public class JpaUserDetailsManager implements UserDetailsManager{
 
     @Override
     public void createUser(UserDetails user) {
-        if (userExists(user.getUsername()))
+        if (userExists(user.getUsername())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
         try {
             CustomUserDetails userDetails = (CustomUserDetails) user;
             UserEntity newUser = UserEntity.builder()
-                        .username(userDetails.getUsername())
-                        .password(userDetails.getPassword())
-                        .authorities(userDetails.getRawAuthorities()) // 기본적으로 비활성 사용자 권한 지정
-                        .build();
+                    .username(userDetails.getUsername())
+                    .password(userDetails.getPassword())
+                    .authorities(userDetails.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .collect(Collectors.joining(",")))
+                    .build();
+            log.info("authorities: {}", userDetails.getRawAuthorities());
             userRepository.save(newUser);
         } catch (ClassCastException e) {
             log.error("Failed Cast to: {}", CustomUserDetails.class);
@@ -84,7 +90,8 @@ public class JpaUserDetailsManager implements UserDetailsManager{
         target.setEmail(userDetails.getEmail());
         target.setPhone(userDetails.getPhone());
         // 권한 업데이트
-        target.setAuthorities("ROLE_USER");
+        target.setAuthorities(userDetails.getRawAuthorities());
+        log.info("target authorities: {}", userDetails.getRawAuthorities());
         userRepository.save(target);
     }
 
