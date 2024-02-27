@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService service;
-    private final UserDetailsManager manager;
 
     // 회원가입
     // USER CREATE
@@ -30,5 +29,14 @@ public class UserController {
     {
         service.update(id, dto);
         return "UPDATE USER";
+    }
+
+    // USER가 사업자로 권한 변경 신청
+    @PostMapping("/{id}/request")
+    public String requestBusiness(
+            @PathVariable("id") Long id, @RequestBody UserDto dto)
+    {
+        service.requestBusiness(id, dto);
+        return "request Role Change To Business";
     }
 }

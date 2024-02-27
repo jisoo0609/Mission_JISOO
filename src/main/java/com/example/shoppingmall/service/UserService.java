@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -37,12 +38,12 @@ public class UserService {
         if (optionalUser.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        UserEntity existingUser = optionalUser.get();
-        existingUser.setName(dto.getName());
-        existingUser.setNickname(dto.getNickname());
-        existingUser.setAge(dto.getAge());
-        existingUser.setEmail(dto.getEmail());
-        existingUser.setPhone(dto.getPhone());
+        UserEntity target = optionalUser.get();
+        target.setName(dto.getName());
+        target.setNickname(dto.getNickname());
+        target.setAge(dto.getAge());
+        target.setEmail(dto.getEmail());
+        target.setPhone(dto.getPhone());
 
         UserDetails updatedUser = buildUserDetails(dto);
         manager.updateUser(updatedUser);
@@ -51,14 +52,14 @@ public class UserService {
 
     // USER가 BusinessNumber를 추가
     // 사업자로 권한 변경 신청
-    public void requestBusiness(UserDetails user, String businessNumber) {
-        Optional<UserEntity> optionalUser = userRepository.findByUsername(user.getUsername());
+    public void requestBusiness(Long id, UserDto dto) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty())
-            throw new UsernameNotFoundException(user.getUsername());
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        CustomUserDetails userDetails = (CustomUserDetails) user;
         UserEntity target = optionalUser.get();
-        target.setBusinessNumber(businessNumber);
+        target.setBusinessNumber(dto.getBusinessNumber());
+
         userRepository.save(target);
     }
 
@@ -85,7 +86,6 @@ public class UserService {
     }
 
     // 관리자가 사용자 전환 신청 목록 확인
-
 
     // UserDto를 UserDetails로 변환하는 메서드
     private UserDetails buildUserDetails(UserDto dto) {

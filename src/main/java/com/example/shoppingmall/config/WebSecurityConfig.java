@@ -30,7 +30,9 @@ public class WebSecurityConfig {
                                         "/users/register"
                                 )
                                 .permitAll()
-                                .requestMatchers("/users/{id}/update")
+                                .requestMatchers(
+                                        "/users/{id}/update",
+                                        "/users/{id}/request")
                                 .authenticated()
                 )
                 .sessionManagement(sessionManagement ->
