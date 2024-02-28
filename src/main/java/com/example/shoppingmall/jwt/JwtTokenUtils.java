@@ -39,8 +39,9 @@ public class JwtTokenUtils {
                 .setSubject(userDetails.getUsername())
                 // 발급 시간
                 .setIssuedAt(Date.from(now))
+                // 원할한 테스트를 위해 발급된 토큰 7일 지나면 만료되도록 설정해놓음
                 // 로그인 한 후 한시간이 지나면 토큰이 만료됨
-                .setExpiration(Date.from(now.plusSeconds((60 * 60))));
+                .setExpiration(Date.from(now.plusSeconds((60 * 60 * 24 * 7))));
 
         return Jwts.builder()
                 .setClaims(jwtClaims)
