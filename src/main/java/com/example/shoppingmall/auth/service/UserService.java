@@ -1,23 +1,19 @@
-package com.example.shoppingmall.service;
+package com.example.shoppingmall.auth.service;
 
 import com.example.shoppingmall.AuthenticationFacade;
-import com.example.shoppingmall.dto.UserDto;
-import com.example.shoppingmall.entity.CustomUserDetails;
-import com.example.shoppingmall.entity.UserEntity;
-import com.example.shoppingmall.repo.UserRepository;
+import com.example.shoppingmall.auth.dto.UserDto;
+import com.example.shoppingmall.auth.entity.CustomUserDetails;
+import com.example.shoppingmall.auth.entity.UserEntity;
+import com.example.shoppingmall.auth.repo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,7 +67,7 @@ public class UserService {
     @Transactional
     // 관리자가 신청을 수락하거나 거절함
     public void businessUpdate(boolean accept) {
-        if (!authFacade.isCurrentAdmin()) {
+        if (authFacade.isCurrentAdmin()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "관리자 권한이 아닙니다.");
         }
         List<UserEntity> list = userRepository.findByBusinessNumberIsNotNull();
@@ -90,7 +86,7 @@ public class UserService {
 
     // 관리자가 사용자 전환 신청 목록 확인
     public List<UserEntity> checkRequestList() {
-        if (!authFacade.isCurrentAdmin()) {
+        if (authFacade.isCurrentAdmin()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "관리자 권한이 아닙니다.");
         }
         List<UserEntity> requestList = userRepository.findByBusinessNumberIsNotNull();

@@ -1,10 +1,10 @@
 package com.example.shoppingmall.controller;
 
-import com.example.shoppingmall.dto.UserDto;
-import com.example.shoppingmall.dto.jwt.JwtRequestDto;
-import com.example.shoppingmall.dto.jwt.JwtResponseDto;
+import com.example.shoppingmall.auth.dto.UserDto;
+import com.example.shoppingmall.jwt.dto.JwtRequestDto;
+import com.example.shoppingmall.jwt.dto.JwtResponseDto;
 import com.example.shoppingmall.jwt.JwtTokenUtils;
-import com.example.shoppingmall.service.UserService;
+import com.example.shoppingmall.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -13,8 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
 
 @Slf4j
 @RestController

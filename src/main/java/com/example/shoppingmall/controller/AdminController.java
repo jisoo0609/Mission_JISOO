@@ -1,8 +1,7 @@
 package com.example.shoppingmall.controller;
 
-import com.example.shoppingmall.dto.UserDto;
-import com.example.shoppingmall.entity.UserEntity;
-import com.example.shoppingmall.service.UserService;
+import com.example.shoppingmall.auth.entity.UserEntity;
+import com.example.shoppingmall.auth.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

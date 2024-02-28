@@ -1,7 +1,6 @@
-package com.example.shoppingmall.dto;
+package com.example.shoppingmall.auth.dto;
 
-import com.example.shoppingmall.entity.CustomUserDetails;
-import com.example.shoppingmall.entity.UserEntity;
+import com.example.shoppingmall.auth.entity.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

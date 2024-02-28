@@ -1,4 +1,4 @@
-package com.example.shoppingmall.dto.jwt;
+package com.example.shoppingmall.jwt.dto;
 
 import lombok.Getter;
 import lombok.Setter;

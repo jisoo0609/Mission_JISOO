@@ -6,8 +6,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collection;
-
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -18,8 +16,8 @@ public class AuthenticationFacade {
         log.info("authentication: {}", authentication);
         if (authentication != null) {
             return authentication.getAuthorities().stream()
-                    .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+                    .noneMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
         }
-        return false;
+        return true;
     }
 }

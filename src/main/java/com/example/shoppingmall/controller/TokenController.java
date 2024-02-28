@@ -1,7 +1,7 @@
 package com.example.shoppingmall.controller;
 
-import com.example.shoppingmall.dto.jwt.JwtRequestDto;
-import com.example.shoppingmall.dto.jwt.JwtResponseDto;
+import com.example.shoppingmall.jwt.dto.JwtRequestDto;
+import com.example.shoppingmall.jwt.dto.JwtResponseDto;
 import com.example.shoppingmall.jwt.JwtTokenUtils;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;

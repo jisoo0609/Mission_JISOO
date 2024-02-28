@@ -1,4 +1,4 @@
-package com.example.shoppingmall.entity;
+package com.example.shoppingmall.auth.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
