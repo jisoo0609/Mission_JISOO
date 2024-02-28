@@ -41,12 +41,12 @@ public class WebSecurityConfig {
                                         "/admin/list",
                                         "/admin/check",
                                         "/admin/**")
-                                .authenticated()
+                                .hasAuthority("ROLE_ADMIN")
 
                                 .requestMatchers(
                                         "/used/**",
                                         "/used/create")
-                                .authenticated()
+                                .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
