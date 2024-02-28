@@ -31,16 +31,22 @@ public class WebSecurityConfig {
                                         "/users/login"
                                 )
                                 .permitAll()
+
                                 .requestMatchers(
                                         "/users/{id}/update",
                                         "/users/{id}/request")
                                 .authenticated()
+
                                 .requestMatchers(
                                         "/admin/list",
                                         "/admin/check",
                                         "/admin/**")
                                 .authenticated()
 
+                                .requestMatchers(
+                                        "/used/**",
+                                        "/used/create")
+                                .authenticated()
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

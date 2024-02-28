@@ -1,4 +1,4 @@
-package com.example.shoppingmall.retrade.entity;
+package com.example.shoppingmall.used.entity;
 
 import com.example.shoppingmall.auth.entity.UserEntity;
 import jakarta.persistence.*;
@@ -6,9 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Builder
@@ -25,6 +22,7 @@ public class Item {
     private Integer price;  // 최소 가격
     private String status;   // 판매 상태
 
-    @ManyToMany(mappedBy = "items")
-    private List<UserEntity> users = new ArrayList<>();
+    @ManyToOne
+    private UserEntity user;    // 등록한 User
+
 }

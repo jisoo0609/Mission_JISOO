@@ -1,4 +1,4 @@
-package com.example.shoppingmall.retrade.dto;
+package com.example.shoppingmall.used.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,4 +16,5 @@ public class ItemDto {
     private String image;
     private Integer price;
     private String status;
+    private Long userId;
 }

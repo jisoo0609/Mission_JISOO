@@ -1,11 +1,7 @@
 package com.example.shoppingmall.auth.entity;
 
-import com.example.shoppingmall.retrade.entity.Item;
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -35,13 +31,5 @@ public class UserEntity {
     // 테스트를 위해서 문자열 하나에 ','로 구분해 권한을 묘사
     // ROLE_INACTIVE_USER,ROLE_USER,ROLE_BUSINESS_USER,ROLE_ADMINISTRATOR
     private String authorities;
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_item",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_id")
-    )
-    private List<Item> items = new ArrayList<>();
 }
 
