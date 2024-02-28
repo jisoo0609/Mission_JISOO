@@ -4,6 +4,8 @@ import com.example.shoppingmall.auth.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Builder
 @Getter
@@ -26,4 +28,7 @@ public class Item {
 
     @ManyToOne
     private UserEntity user;    // 등록한 User
+
+    @OneToMany(mappedBy = "item")
+    private List<Proposal> proposal;
 }

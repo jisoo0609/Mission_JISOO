@@ -47,6 +47,11 @@ public class WebSecurityConfig {
                                         "/used/**",
                                         "/used/create")
                                 .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
+
+                                .requestMatchers(
+                                        "/proposal/**",
+                                        "/proposal/{id}")
+                                .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
