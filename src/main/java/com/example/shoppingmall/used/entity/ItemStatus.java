@@ -7,7 +7,8 @@ public enum ItemStatus {
     SALE("판매중"),
     ACCEPT("수락"),
     REJECT("거절"),
-    CONFIRM("확정");
+    CONFIRM("구매 확정"),
+    SOLD("판매 완료");
 
     private String status;
 

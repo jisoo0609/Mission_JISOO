@@ -24,6 +24,7 @@ public class Item {
     @Setter
     private Integer price;  // 최소 가격
     @Enumerated(EnumType.STRING)
+    @Setter
     private ItemStatus status;   // 판매 상태
 
     @ManyToOne

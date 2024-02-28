@@ -49,7 +49,7 @@ public class ProposalService {
         return proposalList.stream()
                 .map(proposal -> ProposalDto.builder()
                         .id(proposal.getId())
-                        .status(proposal.getStatus())
+                        .status(proposal.getItem().getStatus())
                         .userId(proposal.getUser().getId())
                         .itemId(proposal.getItem().getId())
                         .build())
@@ -63,7 +63,7 @@ public class ProposalService {
         return proposalList.stream()
                 .map(proposal -> ProposalDto.builder()
                         .id(proposal.getId())
-                        .status(proposal.getStatus())
+                        .status(proposal.getItem().getStatus())
                         .userId(proposal.getUser().getId())
                         .itemId(proposal.getItem().getId())
                         .build())
@@ -71,6 +71,7 @@ public class ProposalService {
     }
 
     // 구매 제안 수락 또는 거절
+    // 물품을 등록한 사용자가 구매 제안을 수락 또는 거절 가능하다.
     @Transactional
     public void accept(Long id, boolean flag) {
         Optional<Proposal> optionalProposal = proposalRepository.findById(id);
@@ -85,8 +86,49 @@ public class ProposalService {
         if (user.equals(authFacade.getAuthName())) {
             if (flag) {
                 proposal.setStatus(ItemStatus.ACCEPT);
+                proposal.getItem().setStatus(ItemStatus.ACCEPT);
             } else {
                 proposal.setStatus(ItemStatus.REJECT);
+                proposal.getItem().setStatus(ItemStatus.REJECT);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
+
+    // 구매 확정
+    // 제안을 등록한 사용자가 구매 확정 가능하다.
+    @Transactional
+    public void confirm(Long id, boolean confirm) {
+        Optional<Proposal> optionalProposal = proposalRepository.findById(id);
+        if (optionalProposal.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Proposal proposal = optionalProposal.get();
+
+        String user = proposal.getUser().getUsername();
+        // proposal의 user와 현재 접근한 유저가 일치하는지 확인
+        log.info("proposal user: {}", user);
+        log.info("auth User: {}", authFacade.getAuthName());
+        if (user.equals(authFacade.getAuthName())) {
+            // 불러온 구매 제안이 수락인 경우
+            if (proposal.getStatus().equals(ItemStatus.ACCEPT) && confirm) {
+                log.info("original Status: {}", proposal.getStatus());
+                // 구매 확정으로 제안 상태 변경
+                proposal.setStatus(ItemStatus.CONFIRM);
+                log.info("confirm Status: {}", proposal.getStatus());
+                // 구매 제안이 확정일 경우 물품의 상태 판매 완료로 변경
+                proposal.getItem().setStatus(ItemStatus.SOLD);
+                log.info("sold out: {}", proposal.getItem().getStatus());
+
+                // item_id 불러옴
+                Long itemId = proposal.getItem().getId();
+                // 해당 id와 같은 요청 전부 거절로 변경
+                List<Proposal> proposalList = proposalRepository.findByItemId(itemId);
+                for (Proposal p : proposalList) {
+                    if (!p.getId().equals(proposal.getId())) {
+                        p.setStatus(ItemStatus.REJECT);
+                    }
+                }
             }
         } else {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);

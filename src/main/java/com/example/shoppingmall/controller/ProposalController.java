@@ -26,7 +26,7 @@ public class ProposalController {
     }
 
     // 구매 제안 수락 또는 거절
-    @PostMapping("/{id}")
+    @PostMapping("/{id}/accept")
     public String accept(
             @PathVariable("id") Long id,
             @RequestParam boolean accept
@@ -37,4 +37,14 @@ public class ProposalController {
         }
         return "REJECT";
     }
+
+    @PostMapping("/{id}/confirm")
+    public String confirm(
+            @PathVariable("id") Long id,
+            @RequestParam boolean confirm
+    ) {
+        service.confirm(id, confirm);
+        return "CONFIRM";
+    }
+
 }
