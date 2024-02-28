@@ -16,6 +16,7 @@ import java.util.List;
 public class ProposalController {
     private final ProposalService service;
 
+    // 구매 제안 확인
     @GetMapping
     public List<ProposalDto> readAll() {
         return service.readAll();
