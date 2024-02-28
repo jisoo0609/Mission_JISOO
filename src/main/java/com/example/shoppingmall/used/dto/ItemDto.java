@@ -1,6 +1,7 @@
 package com.example.shoppingmall.used.dto;
 
 import com.example.shoppingmall.used.entity.Item;
+import com.example.shoppingmall.used.entity.ItemStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ public class ItemDto {
     private String description;
     private String image;
     private Integer price;
-    private String status;
+    private ItemStatus status;
     private Long userId;
 
     public static ItemDto fromEntity(Item item) {

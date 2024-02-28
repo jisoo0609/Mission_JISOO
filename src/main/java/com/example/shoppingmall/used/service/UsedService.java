@@ -3,10 +3,12 @@ package com.example.shoppingmall.used.service;
 import com.example.shoppingmall.AuthenticationFacade;
 import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
-import com.example.shoppingmall.jwt.JwtTokenUtils;
 import com.example.shoppingmall.used.dto.ItemDto;
 import com.example.shoppingmall.used.entity.Item;
+import com.example.shoppingmall.used.entity.ItemStatus;
+import com.example.shoppingmall.used.entity.Proposal;
 import com.example.shoppingmall.used.repo.ItemRepository;
+import com.example.shoppingmall.used.repo.ProposalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class UsedService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
+    private final ProposalRepository proposalRepository;
     private final AuthenticationFacade authFacade;
 
     // 물품 등록
@@ -34,12 +37,11 @@ public class UsedService {
         log.info("Optional UserId: {}", optionalUser.get().getId());
 
         UserEntity user = optionalUser.get();
-        dto.setStatus("판매중");
         Item newItem = Item.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
                 .price(dto.getPrice())
-                .status(dto.getStatus())
+                .status(ItemStatus.SALE)
                 .user(user)
                 .build();
 
@@ -91,5 +93,35 @@ public class UsedService {
         }
 
         itemRepository.delete(target);
+    }
+
+    // 구매 제안
+    public void createProposal(Long id) {
+        // 구매 제안을 하는 유저 정보
+        String name = authFacade.getAuthName();
+        Optional<UserEntity> optionalUser = userRepository.findByUsername(name);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        // 구매 제안할 아이템 가져옴
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if (optionalItem.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Item item = optionalItem.get();
+
+        log.info("register User: {}", item.getUser().getUsername());
+        log.info("auth User: {}", name);
+        if (item.getUser().getUsername().equals(name)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "자신의 등록한 물건에 거래제안을 할 수 없습니다.");
+        }
+
+        // 구매 요청하는 자와 물품을 등록한 사용자가 같지 않으면 제안 가능
+        Proposal newProposal = Proposal.builder()
+                .status(item.getStatus())
+                .user(optionalUser.get())
+                .item(item)
+                .build();
+
+        proposalRepository.save(newProposal);
     }
 }

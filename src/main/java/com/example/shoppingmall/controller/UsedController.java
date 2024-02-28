@@ -54,6 +54,7 @@ public class UsedController {
     // 중고거래 제안
     @RequestMapping("/{id}/proposal")
     public String proposal(@PathVariable("id") Long id) {
+        service.createProposal(id);
         return "SUGGEST";
     }
 }

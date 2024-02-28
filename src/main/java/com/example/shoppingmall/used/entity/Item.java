@@ -21,7 +21,8 @@ public class Item {
     private String image;   // 대표 이미지
     @Setter
     private Integer price;  // 최소 가격
-    private String status;   // 판매 상태
+    @Enumerated(EnumType.STRING)
+    private ItemStatus status;   // 판매 상태
 
     @ManyToOne
     private UserEntity user;    // 등록한 User
