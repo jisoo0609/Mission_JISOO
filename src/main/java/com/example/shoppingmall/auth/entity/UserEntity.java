@@ -26,6 +26,7 @@ public class UserEntity {
     @Column(unique = true)
     private String email;   // 이메일
     private String phone;   // 전화번호
+    private String image;   // 이미지
     private String businessNumber;  // 사업자 등록 번호
 
     // 테스트를 위해서 문자열 하나에 ','로 구분해 권한을 묘사

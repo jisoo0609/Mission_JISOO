@@ -19,6 +19,7 @@ public class UserDto {
     private Integer age;    // 연령대
     private String email;   // 이메일
     private String phone;   // 전화번호
+    private String image;
     private String businessNumber;
 
     private String authorities;     // 권한
@@ -32,6 +33,7 @@ public class UserDto {
                 .age(entity.getAge())
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
+                .image(entity.getImage())
                 .authorities(entity.getAuthorities())
                 .build();
     }

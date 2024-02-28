@@ -22,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final AuthenticationFacade authFacade;
     private final JpaUserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
 

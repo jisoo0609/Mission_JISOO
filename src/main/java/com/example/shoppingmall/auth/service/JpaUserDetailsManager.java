@@ -47,6 +47,7 @@ public class JpaUserDetailsManager implements UserDetailsManager{
                 .age(userEntity.getAge())
                 .email(userEntity.getEmail())
                 .phone(userEntity.getPhone())
+                .image(userEntity.getImage())
                 .build();
     }
 

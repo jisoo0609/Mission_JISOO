@@ -26,6 +26,7 @@ public class CustomUserDetails implements UserDetails {
     private Integer age;    // 연령대
     private String email;   // 이메일
     private String phone;   // 전화번호
+    private String image;
     private String businessNumber;
 
     private String authorities;     // 권한
