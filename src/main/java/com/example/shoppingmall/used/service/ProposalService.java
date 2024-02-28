@@ -5,13 +5,16 @@ import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
 import com.example.shoppingmall.used.dto.ProposalDto;
 import com.example.shoppingmall.used.entity.Item;
+import com.example.shoppingmall.used.entity.ItemStatus;
 import com.example.shoppingmall.used.entity.Proposal;
 import com.example.shoppingmall.used.repo.ItemRepository;
 import com.example.shoppingmall.used.repo.ProposalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -30,9 +33,6 @@ public class ProposalService {
 
     // 구매 제안 조회 - Item을 등록한 유저
     public List<ProposalDto> readAll(Long id) {
-        // 페이지에 접근한 유저 정보 불러옴
-        UserEntity user = getUserEntity();
-
         // 구매 제안 정보 조회할 아이템 가져옴
         Item item = getItem(id);
 
@@ -44,6 +44,7 @@ public class ProposalService {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
+        // item의 Id를 기준으로 해당하는 구매 제안 불러옴
         proposalList = proposalRepository.findByItemId(item.getId());
         return proposalList.stream()
                 .map(proposal -> ProposalDto.builder()
@@ -70,9 +71,27 @@ public class ProposalService {
     }
 
     // 구매 제안 수락 또는 거절
+    @Transactional
+    public void accept(Long id, boolean flag) {
+        Optional<Proposal> optionalProposal = proposalRepository.findById(id);
+        if (optionalProposal.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Proposal proposal = optionalProposal.get();
 
-    // 구매 확정
-
+        String user = proposal.getItem().getUser().getUsername();
+        // proposal의 item의 user_id와 현재 접근한 유저가 일치하는지 확인
+        log.info("item Owner: {}", user);
+        log.info("auth User: {}", authFacade.getAuthName());
+        if (user.equals(authFacade.getAuthName())) {
+            if (flag) {
+                proposal.setStatus(ItemStatus.ACCEPT);
+            } else {
+                proposal.setStatus(ItemStatus.REJECT);
+            }
+        } else {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+    }
 
     private UserEntity getUserEntity() {
         String authName = authFacade.getAuthName();

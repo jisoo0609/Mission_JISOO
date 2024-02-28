@@ -3,10 +3,7 @@ package com.example.shoppingmall.controller;
 import com.example.shoppingmall.used.dto.ProposalDto;
 import com.example.shoppingmall.used.service.ProposalService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,5 +25,16 @@ public class ProposalController {
         return service.readAll(id);
     }
 
-
+    // 구매 제안 수락 또는 거절
+    @PostMapping("/{id}")
+    public String accept(
+            @PathVariable("id") Long id,
+            @RequestParam boolean accept
+    ) {
+        service.accept(id, accept);
+        if (accept) {
+            return "ACCEPT";
+        }
+        return "REJECT";
+    }
 }
