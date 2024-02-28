@@ -47,6 +47,7 @@ public class UsedController {
     // 중고거래 물품 삭제
     @DeleteMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
+        service.delete(id);
         return "Delete";
     }
 

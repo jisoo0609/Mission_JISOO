@@ -3,6 +3,7 @@ package com.example.shoppingmall.used.service;
 import com.example.shoppingmall.AuthenticationFacade;
 import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
+import com.example.shoppingmall.jwt.JwtTokenUtils;
 import com.example.shoppingmall.used.dto.ItemDto;
 import com.example.shoppingmall.used.entity.Item;
 import com.example.shoppingmall.used.repo.ItemRepository;
@@ -62,11 +63,33 @@ public class UsedService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         Item target = optionalItem.get();
 
+        log.info("register User: {}", target.getUser().getUsername());
+        log.info("auth User: {}", authFacade.getAuthName());
+        if (!target.getUser().getUsername().equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "물건을 등록한 유저만 수정할 수 있습니다.");
+        }
+
         target.setTitle(dto.getTitle());
         target.setDescription(dto.getDescription());
         target.setPrice(dto.getPrice());
 
         log.info("update Item: {}", target);
         itemRepository.save(target);
+    }
+
+    // 물품 삭제
+    public void delete(Long id) {
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if (optionalItem.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Item target = optionalItem.get();
+
+        log.info("register User: {}", target.getUser().getUsername());
+        log.info("auth User: {}", authFacade.getAuthName());
+        if (!target.getUser().getUsername().equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "물건을 등록한 유저만 삭제할 수 있습니다.");
+        }
+
+        itemRepository.delete(target);
     }
 }
