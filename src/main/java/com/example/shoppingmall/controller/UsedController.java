@@ -4,10 +4,7 @@ import com.example.shoppingmall.used.dto.ItemDto;
 import com.example.shoppingmall.used.service.UsedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -17,7 +14,7 @@ public class UsedController {
     private final UsedService service;
 
     // 중고거래 물건 등록
-    @RequestMapping("/create")
+    @PostMapping("/create")
     public String createItem(
             @RequestBody ItemDto dto
     ) {
@@ -25,20 +22,30 @@ public class UsedController {
         return "REGISTER";
     }
 
+    // 물건 조회
+    @GetMapping("/{id}")
+    public ItemDto readOne(@PathVariable("id") Long id) {
+        return service.readOne(id);
+    }
+
     // 중고거래 물건 img 추가
-    @RequestMapping("/{id}/update-image")
+    @PostMapping("/{id}/update-image")
     public String updateImage(@PathVariable("id") Long id) {
         return "Img Update";
     }
 
     // 중고거래 물품 수정
-    @RequestMapping("/{id}/update")
-    public String update(@PathVariable("id") Long id) {
+    @PostMapping ("/{id}/update")
+    public String update(
+            @PathVariable("id") Long id,
+            @RequestBody ItemDto dto
+    ) {
+        service.update(id, dto);
         return "Update";
     }
 
     // 중고거래 물품 삭제
-    @RequestMapping("/{id}/delete")
+    @DeleteMapping("/{id}/delete")
     public String delete(@PathVariable("id") Long id) {
         return "Delete";
     }

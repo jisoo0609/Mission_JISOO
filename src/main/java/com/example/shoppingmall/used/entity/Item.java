@@ -2,10 +2,7 @@ package com.example.shoppingmall.used.entity;
 
 import com.example.shoppingmall.auth.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Builder
@@ -16,13 +13,16 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Setter
     private String title;   // 제목
+    @Setter
     private String description; // 설명
+    @Setter
     private String image;   // 대표 이미지
+    @Setter
     private Integer price;  // 최소 가격
     private String status;   // 판매 상태
 
     @ManyToOne
     private UserEntity user;    // 등록한 User
-
 }

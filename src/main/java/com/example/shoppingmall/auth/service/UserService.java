@@ -67,9 +67,6 @@ public class UserService {
     @Transactional
     // 관리자가 신청을 수락하거나 거절함
     public void businessUpdate(boolean accept) {
-        if (authFacade.isCurrentAdmin()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "관리자 권한이 아닙니다.");
-        }
         List<UserEntity> list = userRepository.findByBusinessNumberIsNotNull();
         if (list.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -86,9 +83,6 @@ public class UserService {
 
     // 관리자가 사용자 전환 신청 목록 확인
     public List<UserEntity> checkRequestList() {
-        if (authFacade.isCurrentAdmin()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "관리자 권한이 아닙니다.");
-        }
         List<UserEntity> requestList = userRepository.findByBusinessNumberIsNotNull();
         if (requestList.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);

@@ -32,11 +32,6 @@ public class UsedService {
         log.info("name: {}", name);
         log.info("Optional UserId: {}", optionalUser.get().getId());
 
-        // 비활성 유저가 아니면 중고거래 가능
-        if (authFacade.isInactiveUser()) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
-
         UserEntity user = optionalUser.get();
         dto.setStatus("판매중");
         Item newItem = Item.builder()
@@ -49,5 +44,29 @@ public class UsedService {
 
         log.info("newItem: {}", newItem);
         itemRepository.save(newItem);
+    }
+
+    // 물품 정보 조회
+    public ItemDto readOne(Long id) {
+        return itemRepository.findById(id)
+                .map(ItemDto::fromEntity)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+    }
+
+    // 물품 수정
+    public void update(Long id, ItemDto dto) {
+        // 수정할 물건 가져옴
+        Optional<Item> optionalItem = itemRepository.findById(id);
+        if (optionalItem.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Item target = optionalItem.get();
+
+        target.setTitle(dto.getTitle());
+        target.setDescription(dto.getDescription());
+        target.setPrice(dto.getPrice());
+
+        log.info("update Item: {}", target);
+        itemRepository.save(target);
     }
 }

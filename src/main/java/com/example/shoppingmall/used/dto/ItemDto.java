@@ -1,5 +1,6 @@
 package com.example.shoppingmall.used.dto;
 
+import com.example.shoppingmall.used.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +18,16 @@ public class ItemDto {
     private Integer price;
     private String status;
     private Long userId;
+
+    public static ItemDto fromEntity(Item item) {
+        return ItemDto.builder()
+                .id(item.getId())
+                .title(item.getTitle())
+                .description(item.getDescription())
+                .image(item.getImage())
+                .price(item.getPrice())
+                .status(item.getStatus())
+                .userId(item.getUser().getId())
+                .build();
+    }
 }
