@@ -1,10 +1,7 @@
 package com.example.shoppingmall.shop.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -21,4 +18,8 @@ public class ShopCategory {
 
     @ManyToMany(mappedBy = "shopCategories")
     private List<Shop> shops;
+
+    public ShopCategory(String name) {
+        this.name = name;
+    }
 }
