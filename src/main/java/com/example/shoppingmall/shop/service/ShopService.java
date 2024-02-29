@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -44,21 +42,54 @@ public class ShopService {
                 .build();
 
         // 쇼핑몰 카테고리 추가
-        List<ShopCategory> shopCategories = new ArrayList<>();
-        for (String categoryName : dto.getShopCategories()) {
-            ShopCategory shopCategory = shopCategoryRepository.findByName(categoryName);
-            if (shopCategory == null) {
-                // 쇼핑몰 카테고리가 존재하지 않는 경우 새로 생성
-                shopCategory = new ShopCategory(categoryName);
-                shopCategoryRepository.save(shopCategory);
-            }
-            shopCategories.add(shopCategory);
-        }
+        Set<ShopCategory> shopCategories = getShopCategories(new HashSet<>(dto.getShopCategories()));
 
         // 새로운 shop 생성
         newShop.setShopCategories(shopCategories);
         return ShopDto.fromEntity(shopRepository.save(newShop));
     }
+
+    // 쇼핑몰 정보 불러오기
+    public ShopDto readOne(Long id) {
+        Optional<Shop> optionalShop = shopRepository.findById(id);
+        if (optionalShop.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Shop shop = optionalShop.get();
+
+        log.info("shop Owner: {}", shop.getUser().getUsername());
+        log.info("auth user: {}", authFacade.getAuthName());
+        if (!shop.getUser().getUsername().equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        return ShopDto.fromEntity(shop);
+    }
+
+    // 쇼핑몰 정보 수정
+    public ShopDto updateShop(Long id, ShopDto dto) {
+        // 수정할 Shop 가져옴
+        Shop target = getShop(id);
+
+        // shop owner
+        String user = target.getUser().getUsername();
+
+        // 접근한 user와 shop owner가 같을때 정보 수정 가능
+        if (!user.equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        // 카테고리 정보 수정
+        Set<ShopCategory> shopCategories
+                = getShopCategories(new HashSet<>(dto.getShopCategories()));
+        target.setName(dto.getName());
+        target.setDescription(dto.getDescription());
+        target.setShopCategories(shopCategories);
+
+        return ShopDto.fromEntity(shopRepository.save(target));
+    }
+
+    // 쇼핑몰 폐쇄 요청
+
+    // 관리자가 허가 또는 거절
 
     private UserEntity getUserEntity() {
         String authName = authFacade.getAuthName();
@@ -72,5 +103,27 @@ public class ShopService {
         return user;
     }
 
+    private Shop getShop(Long id) {
+        Shop shop = shopRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
+        // shop 정보 확인용 log
+        log.info("shop owner: {}", shop.getUser().getUsername());
+        return shop;
+    }
+
+    // 쇼핑몰 카테고리 추출 메서드
+    private Set<ShopCategory> getShopCategories(Set<String> categoryNames) {
+        Set<ShopCategory> shopCategories = new HashSet<>();
+        for (String categoryName : categoryNames) {
+            ShopCategory shopCategory = shopCategoryRepository.findByName(categoryName);
+            if (shopCategory == null) {
+                // 쇼핑몰 카테고리가 존재하지 않는 경우 새로 생성
+                shopCategory = new ShopCategory(categoryName);
+                shopCategoryRepository.save(shopCategory);
+            }
+            shopCategories.add(shopCategory);
+        }
+        return shopCategories;
+    }
 }

@@ -54,7 +54,8 @@ public class WebSecurityConfig {
                                 .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
 
                                 .requestMatchers(
-                                        "/shop/create")
+                                        "/shop/create",
+                                        "/shop/{id}/**")
                                 .hasAnyAuthority("ROLE_BUSINESS_USER","ROLE_ADMIN")
                 )
                 .sessionManagement(sessionManagement ->

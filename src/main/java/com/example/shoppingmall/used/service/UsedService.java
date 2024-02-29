@@ -61,10 +61,7 @@ public class UsedService {
     // 물품 수정
     public ItemDto update(Long id, ItemDto dto) {
         // 수정할 물건 가져옴
-        Optional<Item> optionalItem = itemRepository.findById(id);
-        if (optionalItem.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Item target = optionalItem.get();
+        Item target = getItem(id);
 
         log.info("register User: {}", target.getUser().getUsername());
         log.info("auth User: {}", authFacade.getAuthName());
@@ -82,10 +79,7 @@ public class UsedService {
 
     // 물품 삭제
     public void delete(Long id) {
-        Optional<Item> optionalItem = itemRepository.findById(id);
-        if (optionalItem.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Item target = optionalItem.get();
+        Item target = getItem(id);
 
         log.info("register User: {}", target.getUser().getUsername());
         log.info("auth User: {}", authFacade.getAuthName());
@@ -124,5 +118,10 @@ public class UsedService {
                 .build();
 
         return ProposalDto.fromEntity(proposalRepository.save(newProposal));
+    }
+
+    private Item getItem(Long id) {
+        return itemRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

@@ -3,7 +3,7 @@ package com.example.shoppingmall.shop.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder
@@ -17,7 +17,7 @@ public class ShopCategory {
     private String name;
 
     @ManyToMany(mappedBy = "shopCategories")
-    private List<Shop> shops;
+    private Set<Shop> shops;
 
     public ShopCategory(String name) {
         this.name = name;

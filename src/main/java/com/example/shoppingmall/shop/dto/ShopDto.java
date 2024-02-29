@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -19,12 +19,12 @@ public class ShopDto {
     private String description;
     private ShopStatus status;
     private Long userId;
-    private List<String> shopCategories;
+    private Set<String> shopCategories;
 
     public static ShopDto fromEntity(Shop shop) {
-        List<String> categoryName = shop.getShopCategories().stream()
+        Set<String> categoryName = shop.getShopCategories().stream()
                 .map(ShopCategory::getName)
-                .toList();
+                .collect(Collectors.toSet());
 
         return ShopDto.builder()
                 .id(shop.getId())

@@ -4,7 +4,7 @@ import com.example.shoppingmall.auth.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Builder
@@ -16,10 +16,13 @@ public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private String name;   // 쇼핑몰 이름
     private String description;   // 소개
     @Enumerated(EnumType.STRING)
-    private ShopStatus status;
+    private ShopStatus status;  // 상태
+    private String closureReason;   // 폐쇄 사유
+    private String rejectionReason; // 불허 사유
 
     @ManyToOne
     private UserEntity user;
@@ -30,5 +33,5 @@ public class Shop {
             joinColumns = @JoinColumn(name = "shop_id"),
             inverseJoinColumns = @JoinColumn(name = "shopcategory_id")
     )
-    private List<ShopCategory> shopCategories;
+    private Set<ShopCategory> shopCategories;
 }
