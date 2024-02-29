@@ -1,4 +1,4 @@
-package com.example.shoppingmall.controller;
+package com.example.shoppingmall.used;
 
 import com.example.shoppingmall.used.dto.ProposalDto;
 import com.example.shoppingmall.used.service.ProposalService;

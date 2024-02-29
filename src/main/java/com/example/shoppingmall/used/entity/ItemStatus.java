@@ -10,7 +10,7 @@ public enum ItemStatus {
     CONFIRM("구매 확정"),
     SOLD("판매 완료");
 
-    private String status;
+    private final String status;
 
     ItemStatus(String status) {
         this.status = getStatus();

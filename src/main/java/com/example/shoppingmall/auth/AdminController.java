@@ -1,4 +1,4 @@
-package com.example.shoppingmall.controller;
+package com.example.shoppingmall.auth;
 
 import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.service.UserService;
