@@ -23,12 +23,14 @@ public class JpaUserDetailsManager implements UserDetailsManager{
 
     public JpaUserDetailsManager(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        // 관리자
-        createUser(CustomUserDetails.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("password"))
-                .authorities("ROLE_ADMIN")
-                .build());
+        if (!userExists("admin")) {
+            // 관리자
+            createUser(CustomUserDetails.builder()
+                    .username("admin")
+                    .password(passwordEncoder.encode("password"))
+                    .authorities("ROLE_ADMIN")
+                    .build());
+        }
     }
 
     @Override
@@ -67,7 +69,7 @@ public class JpaUserDetailsManager implements UserDetailsManager{
                     .build();
             log.info("authorities: {}", userDetails.getRawAuthorities());
             userRepository.save(newUser);
-        } catch (ClassCastException e) {
+        } catch (Exception e) {
             log.error("Failed Cast to: {}", CustomUserDetails.class);
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
