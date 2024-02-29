@@ -55,7 +55,9 @@ public class WebSecurityConfig {
 
                                 .requestMatchers(
                                         "/shop/create",
-                                        "/shop/{id}/**")
+                                        "/shop/{id}/update",
+                                        "/shop/{id}/submit",
+                                        "/shop/{id}/close-request")
                                 .hasAnyAuthority("ROLE_BUSINESS_USER","ROLE_ADMIN")
 
                                 .requestMatchers(
@@ -64,14 +66,18 @@ public class WebSecurityConfig {
                                 )
                                 .hasAuthority("ROLE_ADMIN")
 
-                                .requestMatchers("/management/**")
+                                .requestMatchers("/shop/{id}/management/**")
                                 .hasAuthority("ROLE_BUSINESS_USER")
 
                                 .requestMatchers(
-                                        "/shop/{shopId}/product",
+                                        "/shop/{shopId}/product/**",
                                         "/shop/{shopId}/product/{productId}"
                                 )
                                 .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
+
+                                .requestMatchers(
+                                        "/shop/{shopId}/product/{productId}/order/create"
+                                ).hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

@@ -50,28 +50,6 @@ public class ShopManagementService {
         return ProductDto.fromEntity(productRepository.save(newProduct));
     }
 
-    // READ ALL
-    // 쇼핑몰 상품 전체 보기
-    public List<ProductDto> readAll(Long id) {
-        Shop shop = getShop(id);
-        List<Product> productList = productRepository.findByShopId(shop.getId());
-
-        return productList.stream()
-                .map(ProductDto::fromEntity)
-                .collect(Collectors.toList());
-    }
-
-    // READ ONE
-    // 상품 상세조회
-    public ProductDto readOne(Long shopId, Long productId) {
-        Optional<Product> optionalProduct = productRepository.findByShopIdAndId(shopId, productId);
-        if (optionalProduct.isEmpty())
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        Product product = optionalProduct.get();
-
-        return ProductDto.fromEntity(product);
-    }
-
     // UPDATE
     // 상품 수정
     public ProductDto updateProduct(Long shopId, Long productId, ProductDto dto) {
@@ -111,10 +89,6 @@ public class ShopManagementService {
 
         productRepository.delete(target);
     }
-
-    // SEARCH
-    // 쇼핑몰 상품 조회
-
 
     private Shop getShop(Long id) {
         Shop shop = shopRepository.findById(id)

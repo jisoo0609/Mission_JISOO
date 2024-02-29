@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/shop")
 @RequiredArgsConstructor
-
 public class ShopController {
     private final ShopService service;
 

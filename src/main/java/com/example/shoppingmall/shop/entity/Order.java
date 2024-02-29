@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,8 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer totalPrice; // 금액
-    private OrderStatus status; // 상태
+    private OrderStatus status;
+    private LocalDateTime orderDateTime;
 
     @ManyToOne
     private UserEntity user;    // 주문한 유저

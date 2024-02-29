@@ -107,7 +107,7 @@ public class UsedService {
         log.info("register User: {}", item.getUser().getUsername());
         log.info("auth User: {}", name);
         if (item.getUser().getUsername().equals(name)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "자신의 등록한 물건에 거래제안을 할 수 없습니다.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신의 등록한 물건에 거래제안을 할 수 없습니다.");
         }
 
         // 구매 요청하는 자와 물품을 등록한 사용자가 같지 않으면 제안 가능
