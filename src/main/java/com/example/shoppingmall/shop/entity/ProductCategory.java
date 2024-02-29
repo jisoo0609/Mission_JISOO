@@ -17,6 +17,6 @@ public class ProductCategory {
     private Long id;
     private String name;
 
-    @OneToMany(mappedBy = "productCategory")
-    private List<Product> products;
+//    @OneToMany(mappedBy = "productCategory")
+//    private List<Product> products;
 }

@@ -63,6 +63,15 @@ public class WebSecurityConfig {
                                         "/shop/admin/{id}"
                                 )
                                 .hasAuthority("ROLE_ADMIN")
+
+                                .requestMatchers("/management/**")
+                                .hasAuthority("ROLE_BUSINESS_USER")
+
+                                .requestMatchers(
+                                        "/shop/{shopId}/product",
+                                        "/shop/{shopId}/product/{productId}"
+                                )
+                                .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

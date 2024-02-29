@@ -13,6 +13,7 @@ import java.util.List;
 @Getter
 @Builder
 @Entity
+@Table(name = "custom_order")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {

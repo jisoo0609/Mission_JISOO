@@ -1,5 +1,7 @@
 package com.example.shoppingmall.shop.dto;
 
+import com.example.shoppingmall.shop.entity.Order;
+import com.example.shoppingmall.shop.entity.Product;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +19,23 @@ public class ProductDto {
     private String description;
     private Integer price;
     private Integer stock;
-    private Long productCategoryId;
     private Long shopId;
     private List<Long> orderId;
+
+    public static ProductDto fromEntity(Product entity) {
+        List<Long> orderIdList = entity.getOrders().stream()
+                .map(Order::getId)
+                .toList();
+
+        return ProductDto.builder()
+                .id(entity.getId())
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .image(entity.getImage())
+                .price(entity.getPrice())
+                .stock(entity.getStock())
+                .shopId(entity.getShop().getId())
+                .orderId(orderIdList)
+                .build();
+    }
 }
