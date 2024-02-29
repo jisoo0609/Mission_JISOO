@@ -28,6 +28,7 @@ public class Item {
     private ItemStatus status;   // 판매 상태
 
     @ManyToOne
+    @JoinColumn(name = "user_id", columnDefinition = "INT")
     private UserEntity user;    // 등록한 User
 
     @OneToMany(mappedBy = "item")

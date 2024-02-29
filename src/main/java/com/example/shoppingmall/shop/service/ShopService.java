@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -101,6 +102,11 @@ public class ShopService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
+        // 이미 오픈된 쇼핑몰이 요청을 보냈을 경우 예외
+        if (shop.getStatus().equals(ShopStatus.OPEN)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         shop.setStatus(ShopStatus.SUBMITTED);
         shopRepository.save(shop);
         return shop.getStatus();
@@ -118,6 +124,11 @@ public class ShopService {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
+        // 오픈하지 않은 쇼핑몰이 요청을 보냈을 경우 예외
+        if (!shop.getStatus().equals(ShopStatus.OPEN)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
         shop.setCloseReason(dto.getCloseReason());
         log.info("reason: {}", shop.getCloseReason());
         shopRepository.save(shop);
@@ -125,11 +136,51 @@ public class ShopService {
     }
 
     // 관리자가 개설 허가 또는 거절
+    @Transactional
+    public ShopStatus accept(Long id, boolean flag, ShopDto dto) {
+        // 개설 허가 또는 거절할 shop 불러옴
+        Shop shop = getShop(id);
 
-
+        // shop의 상태가 SUBMIT인 경우만 승인 가능
+        if (shop.getStatus().equals(ShopStatus.SUBMITTED)) {
+            if (flag) {
+                shop.setStatus(ShopStatus.ACCEPT);
+                log.info("request accept: {}", shop.getStatus());
+                // 개설이 승인된 쇼핑몰의 상태는 오픈으로 변경
+                shop.setStatus(ShopStatus.OPEN);
+                log.info("open shop: {}", shop.getStatus());
+                shopRepository.save(shop);
+            } else {
+                shop.setStatus(ShopStatus.REJECT);
+                shop.setRejectionReason(dto.getRejectionReason());
+                shopRepository.save(shop);
+            }
+            return shop.getStatus();
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+    }
 
     // 관리자가 폐쇄 수락
+    @Transactional
+    public ShopStatus closeAccept(Long id, boolean flag) {
+        // 폐쇄 요청이 온 쇼핑몰 가져오기
+        Shop shop = getShop(id);
 
+        if (shop.getCloseReason() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if (flag) {
+            shop.setStatus(ShopStatus.CLOSED);
+            shopRepository.save(shop);
+        } else {
+            // 폐쇄 거절
+            shop.setCloseReason(null);
+            shopRepository.save(shop);
+        }
+        return shop.getStatus();
+    }
 
     private UserEntity getUserEntity() {
         String authName = authFacade.getAuthName();

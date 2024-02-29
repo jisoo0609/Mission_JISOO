@@ -39,12 +39,9 @@ public class ShopController {
     }
 
     // 쇼핑몰 폐쇄 요청
-    @PostMapping("{id}/close-request")
-    public String closeRequest(@PathVariable Long id,@RequestBody ShopDto dto) {
+    @PostMapping("/{id}/close-request")
+    public String closeRequest(@PathVariable Long id, @RequestBody ShopDto dto) {
         String reason = service.closeRequest(id, dto);
         return "Close Reason: " + reason;
     }
-
-    // 쇼핑몰 개설 허가 / 불허
-
 }

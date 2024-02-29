@@ -16,7 +16,7 @@ public class Shop {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;   // 쇼핑몰 이름
     private String description;   // 소개
     @Enumerated(EnumType.STRING)
