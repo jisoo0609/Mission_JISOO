@@ -4,6 +4,7 @@ import com.example.shoppingmall.AuthenticationFacade;
 import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
 import com.example.shoppingmall.used.dto.ItemDto;
+import com.example.shoppingmall.used.dto.ProposalDto;
 import com.example.shoppingmall.used.entity.Item;
 import com.example.shoppingmall.used.entity.ItemStatus;
 import com.example.shoppingmall.used.entity.Proposal;
@@ -27,7 +28,7 @@ public class UsedService {
     private final AuthenticationFacade authFacade;
 
     // 물품 등록
-    public void crateItem(ItemDto dto) {
+    public ItemDto crateItem(ItemDto dto) {
         String name = authFacade.getAuth().getName();
         Optional<UserEntity> optionalUser = userRepository.findByUsername(name);
         if (optionalUser.isEmpty())
@@ -46,7 +47,7 @@ public class UsedService {
                 .build();
 
         log.info("newItem: {}", newItem);
-        itemRepository.save(newItem);
+        return ItemDto.fromEntity(itemRepository.save(newItem));
     }
 
     // 물품 정보 조회
@@ -58,7 +59,7 @@ public class UsedService {
     }
 
     // 물품 수정
-    public void update(Long id, ItemDto dto) {
+    public ItemDto update(Long id, ItemDto dto) {
         // 수정할 물건 가져옴
         Optional<Item> optionalItem = itemRepository.findById(id);
         if (optionalItem.isEmpty())
@@ -76,7 +77,7 @@ public class UsedService {
         target.setPrice(dto.getPrice());
 
         log.info("update Item: {}", target);
-        itemRepository.save(target);
+        return ItemDto.fromEntity(itemRepository.save(target));
     }
 
     // 물품 삭제
@@ -96,7 +97,7 @@ public class UsedService {
     }
 
     // 구매 제안
-    public void createProposal(Long id) {
+    public ProposalDto createProposal(Long id) {
         // 구매 제안을 하는 유저 정보
         String name = authFacade.getAuthName();
         Optional<UserEntity> optionalUser = userRepository.findByUsername(name);
@@ -122,6 +123,6 @@ public class UsedService {
                 .item(item)
                 .build();
 
-        proposalRepository.save(newProposal);
+        return ProposalDto.fromEntity(proposalRepository.save(newProposal));
     }
 }

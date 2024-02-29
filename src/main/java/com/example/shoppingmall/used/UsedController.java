@@ -1,6 +1,7 @@
 package com.example.shoppingmall.used;
 
 import com.example.shoppingmall.used.dto.ItemDto;
+import com.example.shoppingmall.used.dto.ProposalDto;
 import com.example.shoppingmall.used.service.UsedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +15,11 @@ public class UsedController {
     private final UsedService service;
 
     // 중고거래 물건 등록
-    @PostMapping("/create")
-    public String createItem(
+    @PutMapping("/create")
+    public ItemDto createItem(
             @RequestBody ItemDto dto
     ) {
-        service.crateItem(dto);
-        return "REGISTER";
+        return service.crateItem(dto);
     }
 
     // 물건 조회
@@ -36,12 +36,11 @@ public class UsedController {
 
     // 중고거래 물품 수정
     @PostMapping ("/{id}/update")
-    public String update(
+    public ItemDto update(
             @PathVariable("id") Long id,
             @RequestBody ItemDto dto
     ) {
-        service.update(id, dto);
-        return "Update";
+        return service.update(id, dto);
     }
 
     // 중고거래 물품 삭제
@@ -52,9 +51,8 @@ public class UsedController {
     }
 
     // 중고거래 제안
-    @PostMapping("/{id}/proposal")
-    public String proposal(@PathVariable("id") Long id) {
-        service.createProposal(id);
-        return "SUGGEST";
+    @PutMapping("/{id}/proposal")
+    public ProposalDto proposal(@PathVariable("id") Long id) {
+        return service.createProposal(id);
     }
 }
