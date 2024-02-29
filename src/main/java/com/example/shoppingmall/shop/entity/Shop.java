@@ -21,7 +21,7 @@ public class Shop {
     private String description;   // 소개
     @Enumerated(EnumType.STRING)
     private ShopStatus status;  // 상태
-    private String closureReason;   // 폐쇄 사유
+    private String closeReason;   // 폐쇄 사유
     private String rejectionReason; // 불허 사유
 
     @ManyToOne

@@ -1,6 +1,7 @@
 package com.example.shoppingmall.shop;
 
 import com.example.shoppingmall.shop.dto.ShopDto;
+import com.example.shoppingmall.shop.entity.ShopStatus;
 import com.example.shoppingmall.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/shop")
 @RequiredArgsConstructor
+
 public class ShopController {
     private final ShopService service;
 
@@ -28,5 +30,21 @@ public class ShopController {
     public ShopDto updateShop(@PathVariable Long id, @RequestBody ShopDto dto) {
         return service.updateShop(id, dto);
     }
+
+    // 쇼핑몰 개설 요청
+    @PostMapping("/{id}/submit")
+    public String openRequest(@PathVariable Long id) {
+       ShopStatus status = service.openRequest(id);
+       return "Shop Status: " + status;
+    }
+
+    // 쇼핑몰 폐쇄 요청
+    @PostMapping("{id}/close-request")
+    public String closeRequest(@PathVariable Long id,@RequestBody ShopDto dto) {
+        String reason = service.closeRequest(id, dto);
+        return "Close Reason: " + reason;
+    }
+
+    // 쇼핑몰 개설 허가 / 불허
 
 }

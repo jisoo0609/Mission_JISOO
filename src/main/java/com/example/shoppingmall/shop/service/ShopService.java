@@ -72,6 +72,8 @@ public class ShopService {
         // shop owner
         String user = target.getUser().getUsername();
 
+        log.info("shop Owner: {}", user);
+        log.info("auth user: {}", authFacade.getAuthName());
         // 접근한 user와 shop owner가 같을때 정보 수정 가능
         if (!user.equals(authFacade.getAuthName())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -87,9 +89,47 @@ public class ShopService {
         return ShopDto.fromEntity(shopRepository.save(target));
     }
 
-    // 쇼핑몰 폐쇄 요청
+    // 쇼핑몰 개설 요청
+    public ShopStatus openRequest(Long id) {
+        // 개설 요청할 쇼핑몰 정보 불러오기
+        Shop shop = getShop(id);
 
-    // 관리자가 허가 또는 거절
+        // 쇼핑몰 owner와, 접근 user가 같은 경우 요청 가능
+        log.info("shop Owner: {}", shop.getUser().getUsername());
+        log.info("auht user: {}", authFacade.getAuthName());
+        if (!shop.getUser().getUsername().equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        shop.setStatus(ShopStatus.SUBMITTED);
+        shopRepository.save(shop);
+        return shop.getStatus();
+    }
+
+    // 쇼핑몰 폐쇄 요청
+    public String closeRequest(Long id, ShopDto dto) {
+        // 폐쇄 요청할 쇼핑몰 정보 불러오기
+        Shop shop = getShop(id);
+
+        // 쇼핑몰 owner와, 접근 user가 같은 경우 요청 가능
+        log.info("shop Owner: {}", shop.getUser().getUsername());
+        log.info("auth user: {}", authFacade.getAuthName());
+        if (!shop.getUser().getUsername().equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+
+        shop.setCloseReason(dto.getCloseReason());
+        log.info("reason: {}", shop.getCloseReason());
+        shopRepository.save(shop);
+        return shop.getCloseReason();
+    }
+
+    // 관리자가 개설 허가 또는 거절
+
+
+
+    // 관리자가 폐쇄 수락
+
 
     private UserEntity getUserEntity() {
         String authName = authFacade.getAuthName();

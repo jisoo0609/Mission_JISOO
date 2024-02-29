@@ -6,6 +6,7 @@ import com.example.shoppingmall.shop.entity.ShopStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -18,6 +19,8 @@ public class ShopDto {
     private String name;
     private String description;
     private ShopStatus status;
+    private String closeReason;
+    private String rejectionReason;
     private Long userId;
     private Set<String> shopCategories;
 
@@ -31,9 +34,10 @@ public class ShopDto {
                 .name(shop.getName())
                 .description(shop.getDescription())
                 .status(shop.getStatus())
+                .closeReason(shop.getCloseReason())
+                .rejectionReason(shop.getRejectionReason())
                 .userId(shop.getUser().getId())
                 .shopCategories(categoryName)
                 .build();
     }
-
 }
