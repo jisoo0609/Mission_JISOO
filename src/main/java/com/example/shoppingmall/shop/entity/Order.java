@@ -2,16 +2,14 @@ package com.example.shoppingmall.shop.entity;
 
 import com.example.shoppingmall.auth.entity.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @Table(name = "custom_order")
@@ -22,17 +20,18 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Integer totalPrice; // 금액
-    private OrderStatus status;
-    private LocalDateTime orderDateTime;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status; // 주문 상태
+    private LocalDateTime orderDateTime;    // 주문 시각
 
     @ManyToOne
     private UserEntity user;    // 주문한 유저
 
     @ManyToMany
     @JoinTable(
-            name = "order_item",
+            name = "order_product",
             joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "item_id")
+            inverseJoinColumns = @JoinColumn(name = "product_id")
     )
     private final List<Product> products = new ArrayList<>();
 }

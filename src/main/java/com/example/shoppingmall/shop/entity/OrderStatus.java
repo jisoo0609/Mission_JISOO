@@ -1,5 +1,8 @@
 package com.example.shoppingmall.shop.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum OrderStatus {
     PREPARING("구매 요청"),
     ACCEPT("수락"),

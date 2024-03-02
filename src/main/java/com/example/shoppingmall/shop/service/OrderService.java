@@ -6,14 +6,17 @@ import com.example.shoppingmall.auth.repo.UserRepository;
 import com.example.shoppingmall.shop.dto.OrderDto;
 import com.example.shoppingmall.shop.dto.OrderProductDto;
 import com.example.shoppingmall.shop.entity.Order;
+import com.example.shoppingmall.shop.entity.OrderProduct;
 import com.example.shoppingmall.shop.entity.OrderStatus;
 import com.example.shoppingmall.shop.entity.Product;
+import com.example.shoppingmall.shop.repo.OrderProductRepository;
 import com.example.shoppingmall.shop.repo.OrderRepository;
 import com.example.shoppingmall.shop.repo.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -24,6 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final OrderProductRepository orderProductRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final AuthenticationFacade authFacade;
@@ -33,6 +37,7 @@ public class OrderService {
         // 구매할 상품 가져옴
         Product product = getProduct(shopId, productId);
 
+        // 주문할 상품의 재고가 0개인 경우 예외
         if (product.getStock() <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "재고가 부족합니다.");
         }
@@ -47,22 +52,38 @@ public class OrderService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신이 등록한 물건을 구입할 수 없습니다.");
         }
 
-        // 주문 생성
+        // 주문 생성 및 저장
         Order newOrder = Order.builder()
                 .totalPrice(dto.getCount() * product.getPrice())
                 .status(OrderStatus.PREPARING)
                 .orderDateTime(LocalDateTime.now())
                 .user(user)
                 .build();
+        Order saveOrder = orderRepository.save(newOrder);
 
-        return OrderDto.fromEntity(orderRepository.save(newOrder));
+        // OrderProduct 생성 및 저장
+        OrderProduct orderProduct = OrderProduct.builder()
+                .order(saveOrder)
+                .product(product)
+                .count(dto.getCount())
+                .build();
+        orderProductRepository.save(orderProduct);
+
+        return OrderDto.fromEntity(saveOrder);
     }
+
+
 
     private Product getProduct(Long shopId, Long productId) {
         Optional<Product> optionalProduct = productRepository.findByShopIdAndId(shopId, productId);
         if (optionalProduct.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return optionalProduct.get();
+    }
+
+    private Order getOrder(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     private UserEntity getUserEntity() {
