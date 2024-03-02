@@ -78,6 +78,10 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                         "/shop/{shopId}/product/{productId}/order/create"
                                 ).hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
+
+                                .requestMatchers(
+                                        "/shop/{shopId}/product/{productId}/order/{orderId}/accept"
+                                ).hasAuthority("ROLE_BUSINESS_USER")
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

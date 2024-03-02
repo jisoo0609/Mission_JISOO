@@ -72,6 +72,47 @@ public class OrderService {
         return OrderDto.fromEntity(saveOrder);
     }
 
+    // 구매 요청 수락
+    @Transactional
+    public OrderStatus accept(Long shopId, Long productId, Long orderId, boolean flag) {
+        // 구매 요청 수락 / 거절될 주문 불러옴
+        Order order = getOrder(orderId);
+        Product product = getProduct(shopId, productId);
+
+        // 주문 수락하는 유저 정보
+        UserEntity user = getUserEntity();
+
+        // 주문 수락하는 유저와 shop의 주인이 같지 않으면 예외
+        log.info("auth User: {}", user.getUsername());
+        log.info("product owner: {}", product.getShop().getUser().getUsername());
+        if (!user.getUsername().equals(product.getShop().getUser().getUsername())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "자신이 등록한 물건을 구입할 수 없습니다.");
+        }
+
+        // 가격 확인
+        log.info("total Price: {}", order.getTotalPrice());
+
+        OrderProduct orderProduct = getOrderProduct(orderId, productId);
+
+        // 구매 요청 수락
+        if (flag) {
+            // 재고 수량 갱신
+            int stock = product.getStock() - orderProduct.getCount();
+            product.setStock(stock);
+            productRepository.save(product);
+
+            // 구매 상태 변경
+            order.setStatus(OrderStatus.ACCEPT);
+            orderRepository.save(order);
+        } else {
+            order.setStatus(OrderStatus.REJECT);
+            orderRepository.save(order);
+        }
+        return order.getStatus();
+    }
+
+    // 구매 취소 요청
+
 
 
     private Product getProduct(Long shopId, Long productId) {
@@ -83,6 +124,11 @@ public class OrderService {
 
     private Order getOrder(Long id) {
         return orderRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    private OrderProduct getOrderProduct(Long orderId, Long productId) {
+        return orderProductRepository.findByOrder_IdAndProduct_Id(orderId, productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
