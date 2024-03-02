@@ -8,13 +8,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/shop/{shopId}/product/{productId}/order")
+@RequestMapping("/order")
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService service;
 
     // 구매 요청하기
-    @PutMapping("/create")
+    @PutMapping("/shop/{shopId}/product/{productId}/order/create")
     public OrderDto createOrder(
             @PathVariable("shopId") Long shopId,
             @PathVariable("productId") Long productId,
@@ -24,7 +24,7 @@ public class OrderController {
     }
 
     // 구매 요청 수락 or 거절
-    @PostMapping("/{orderId}/accept")
+    @PostMapping("/shop/{shopId}/product/{productId}/order/{orderId}/accept")
     public String orderAccept(
             @PathVariable("shopId") Long shopId,
             @PathVariable("productId") Long productId,
@@ -32,6 +32,13 @@ public class OrderController {
             @RequestParam boolean flag
     ) {
         OrderStatus status = service.accept(shopId, productId, orderId, flag);
+        return "Order status: " + status;
+    }
+
+    // 구매 취소 요청
+    @PostMapping("/{orderId}/cancel")
+    public String cancelRequest(@PathVariable("orderId") Long id) {
+        OrderStatus status = service.cancelRequest(id);
         return "Order status: " + status;
     }
 }

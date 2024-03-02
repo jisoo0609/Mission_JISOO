@@ -112,7 +112,32 @@ public class OrderService {
     }
 
     // 구매 취소 요청
+    @Transactional
+    public OrderStatus cancelRequest(Long id) {
+        // 주문 취소 요청할 주문 불러옴
+        Order order = getOrder(id);
 
+        // 주문 취소하는 유저 정보
+        UserEntity user = getUserEntity();
+
+        // 주문 취소하는 user와 order 요청한 user가 다르면 예외
+        log.info("auth User: {}", user.getUsername());
+        log.info("order User: {}", order.getUser().getUsername());
+        if (!user.getUsername().equals(order.getUser().getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "주문을 요청한 유저만 취소 요청 가능합니다.");
+        }
+
+        // 주문 상태가 수락이 아닐 경우에만 취소 가능
+        if (order.getStatus().equals(OrderStatus.ACCEPT)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "이미 구매 요청이 수락된 주문입니다.");
+        }
+
+        // 구매 요청 취소
+        order.setStatus(OrderStatus.CANCEL);
+        orderRepository.save(order);
+
+        return order.getStatus();
+    }
 
 
     private Product getProduct(Long shopId, Long productId) {

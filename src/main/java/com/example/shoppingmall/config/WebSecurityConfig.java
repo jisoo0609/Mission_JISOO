@@ -76,11 +76,12 @@ public class WebSecurityConfig {
                                 .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
 
                                 .requestMatchers(
-                                        "/shop/{shopId}/product/{productId}/order/create"
+                                        "/order/shop/{shopId}/product/{productId}/order/create",
+                                        "/order/{orderId}/cancel"
                                 ).hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
 
                                 .requestMatchers(
-                                        "/shop/{shopId}/product/{productId}/order/{orderId}/accept"
+                                        "/order/shop/{shopId}/product/{productId}/order/{orderId}/accept"
                                 ).hasAuthority("ROLE_BUSINESS_USER")
                 )
                 .sessionManagement(sessionManagement ->
