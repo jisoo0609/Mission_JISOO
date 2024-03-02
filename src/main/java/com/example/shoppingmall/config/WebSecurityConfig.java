@@ -70,8 +70,9 @@ public class WebSecurityConfig {
                                 .hasAuthority("ROLE_BUSINESS_USER")
 
                                 .requestMatchers(
-                                        "/shop/{shopId}/product/**",
-                                        "/shop/{shopId}/product/{productId}"
+                                        "/search/**",
+                                        "/search/shop/{shopId}/product/**",
+                                        "/search/shop/{shopId}/product/{productId}"
                                 )
                                 .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
 

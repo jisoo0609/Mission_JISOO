@@ -21,6 +21,7 @@ public class ProductDto {
     private Integer stock;
     private Long shopId;
     private List<Long> orderId;
+    private ShopDto shop;
 
     public static ProductDto fromEntity(Product entity) {
         List<Long> orderIdList = entity.getOrders().stream()
@@ -36,6 +37,7 @@ public class ProductDto {
                 .stock(entity.getStock())
                 .shopId(entity.getShop().getId())
                 .orderId(orderIdList)
+                .shop(ShopDto.fromEntity(entity.getShop()))
                 .build();
     }
 }
