@@ -84,6 +84,10 @@ public class WebSecurityConfig {
                                 .requestMatchers(
                                         "/order/shop/{shopId}/product/{productId}/order/{orderId}/accept"
                                 ).hasAuthority("ROLE_BUSINESS_USER")
+
+                                .requestMatchers(
+                                        "/toss/**"
+                                ).permitAll()
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

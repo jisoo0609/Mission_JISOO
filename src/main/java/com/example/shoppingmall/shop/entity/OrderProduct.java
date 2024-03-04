@@ -26,4 +26,11 @@ public class OrderProduct {
     private Product product;
 
     private Integer count;  // 상품 수량
+
+    // tossPayment 정보
+    private String tossPaymentKey;
+    private String tossOrderId;
+
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 }
