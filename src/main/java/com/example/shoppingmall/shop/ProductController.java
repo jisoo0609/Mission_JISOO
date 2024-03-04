@@ -17,7 +17,13 @@ public class ProductController {
     // 조건 없이 쇼핑몰 조회
     @GetMapping
     public List<ShopDto> readAll() {
-        return service.readAll();
+        return service.readAllShop();
+    }
+
+    // 쇼핑몰 이름 기준으로 쇼핑몰 조회
+    @GetMapping("/shop")
+    public List<ShopDto> searchByShopName(@RequestParam String name) {
+        return service.searchByShopName(name);
     }
 
     // 쇼핑몰 상품 전체 조회
@@ -36,9 +42,9 @@ public class ProductController {
     }
 
     // 이름 기준으로 상품 조회
-    @GetMapping("/name")
-    public List<ProductDto> searchByName(@RequestBody ProductDto dto) {
-        return service.searchByName(dto);
+    @GetMapping("/product")
+    public List<ProductDto> searchByProductName(@RequestParam String name) {
+        return service.searchByProductName(name);
     }
 
     // 가격 범위를 기준으로 상품 조회

@@ -4,7 +4,6 @@ import com.example.shoppingmall.shop.dto.ProductDto;
 import com.example.shoppingmall.shop.dto.ShopDto;
 import com.example.shoppingmall.shop.entity.Product;
 import com.example.shoppingmall.shop.entity.Shop;
-import com.example.shoppingmall.shop.repo.OrderRepository;
 import com.example.shoppingmall.shop.repo.ProductRepository;
 import com.example.shoppingmall.shop.repo.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,14 +23,30 @@ public class SearchService {
     private final ProductRepository productRepository;
     private final ShopRepository shopRepository;
 
-    // 쇼핑몰 조회 - 조건 X
-    public List<ShopDto> readAll() {
-        List<Shop> productList = shopRepository.findByOrderByOrders_OrderDateTimeDesc();
+    // 쇼핑몰 조회
+    // 조건 X
+    public List<ShopDto> readAllShop() {
+        List<Shop> shopList = shopRepository.findByOrderByOrders_OrderDateTimeDesc();
+        if (shopList.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
-        return productList.stream()
+        return shopList.stream()
                 .map(ShopDto::fromEntity)
                 .distinct()
                 .collect(Collectors.toList());
+    }
+
+    // 쇼핑몰 조회
+    // 이름
+    public List<ShopDto> searchByShopName(String name) {
+        List<Shop> shopList = shopRepository.findByNameContaining(name);
+        if (shopList.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return shopList.stream()
+                .map(ShopDto::fromEntity)
+                .collect(Collectors.toList());
+
     }
 
     // READ ALL
@@ -52,9 +67,9 @@ public class SearchService {
     }
 
     // 이름 기준으로 쇼핑몰의 상품 조회
-    public List<ProductDto> searchByName(ProductDto dto) {
+    public List<ProductDto> searchByProductName(String name) {
         // 상품 조회
-        List<Product> productList = productRepository.findByNameContaining(dto.getName());
+        List<Product> productList = productRepository.findByNameContaining(name);
         if (productList.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
