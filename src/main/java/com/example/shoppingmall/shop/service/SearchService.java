@@ -49,6 +49,18 @@ public class SearchService {
 
     }
 
+    // 쇼핑몰 조회
+    // 카테고리
+    public List<ShopDto> searchByShopCategory(List<String> categoryNames) {
+        List<Shop> shopList = shopRepository.findByShopCategoriesName(categoryNames);
+        if (shopList.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+
+        return shopList.stream()
+                .map(ShopDto::fromEntity)
+                .collect(Collectors.toList());
+    }
+
     // READ ALL
     // 쇼핑몰 상품 전체 보기
     public List<ProductDto> readAll(Long id) {

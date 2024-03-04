@@ -26,6 +26,12 @@ public class ProductController {
         return service.searchByShopName(name);
     }
 
+    // 쇼핑몰 카테고리 기준으로 쇼핑몰 조회
+    @GetMapping("/category")
+    public List<ShopDto> searchByShopCategory(@RequestParam List<String> name) {
+        return service.searchByShopCategory(name);
+    }
+
     // 쇼핑몰 상품 전체 조회
     @GetMapping("/shop/{shopId}/product")
     public List<ProductDto> readAll(@PathVariable("shopId") Long id) {
