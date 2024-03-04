@@ -1,10 +1,7 @@
 package com.example.shoppingmall.shop.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity
@@ -31,6 +28,7 @@ public class OrderProduct {
     private String tossPaymentKey;
     private String tossOrderId;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 }
