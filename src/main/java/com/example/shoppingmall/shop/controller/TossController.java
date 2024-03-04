@@ -59,7 +59,7 @@ public class TossController {
     }
 
     // 결제 취소
-    @PostMapping("/{id}/cancle")
+    @PostMapping("/{id}/cancel")
     public Object cancelPayment(@PathVariable("id") Long id, @RequestBody PaymentCancelDto dto) {
         return service.canclePayment(id, dto);
     }
