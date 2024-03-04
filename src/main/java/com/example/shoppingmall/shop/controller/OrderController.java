@@ -1,4 +1,4 @@
-package com.example.shoppingmall.shop;
+package com.example.shoppingmall.shop.controller;
 
 import com.example.shoppingmall.shop.dto.OrderDto;
 import com.example.shoppingmall.shop.dto.OrderProductDto;
