@@ -1,8 +1,10 @@
 package com.example.shoppingmall.shop.service;
 
 import com.example.shoppingmall.shop.dto.ProductDto;
+import com.example.shoppingmall.shop.dto.ShopDto;
 import com.example.shoppingmall.shop.entity.Product;
 import com.example.shoppingmall.shop.entity.Shop;
+import com.example.shoppingmall.shop.repo.OrderRepository;
 import com.example.shoppingmall.shop.repo.ProductRepository;
 import com.example.shoppingmall.shop.repo.ShopRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,16 @@ public class SearchService {
     private final ProductRepository productRepository;
     private final ShopRepository shopRepository;
 
+    // 쇼핑몰 조회 - 조건 X
+    public List<ShopDto> readAll() {
+        List<Shop> productList = shopRepository.findByOrderByOrders_OrderDateTimeDesc();
+
+        return productList.stream()
+                .map(ShopDto::fromEntity)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
     // READ ALL
     // 쇼핑몰 상품 전체 보기
     public List<ProductDto> readAll(Long id) {
@@ -38,9 +50,6 @@ public class SearchService {
     public ProductDto readOne(Long shopId, Long productId) {
         return ProductDto.fromEntity(getProduct(shopId, productId));
     }
-
-    // 쇼핑몰 조회 - 조건 X
-
 
     // 이름 기준으로 쇼핑몰의 상품 조회
     public List<ProductDto> searchByName(ProductDto dto) {

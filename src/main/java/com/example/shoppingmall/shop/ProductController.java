@@ -1,6 +1,7 @@
 package com.example.shoppingmall.shop;
 
 import com.example.shoppingmall.shop.dto.ProductDto;
+import com.example.shoppingmall.shop.dto.ShopDto;
 import com.example.shoppingmall.shop.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final SearchService service;
+
+    // 조건 없이 쇼핑몰 조회
+    @GetMapping
+    public List<ShopDto> readAll() {
+        return service.readAll();
+    }
 
     // 쇼핑몰 상품 전체 조회
     @GetMapping("/shop/{shopId}/product")

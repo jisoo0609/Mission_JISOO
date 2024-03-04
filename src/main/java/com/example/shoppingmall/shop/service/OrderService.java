@@ -5,10 +5,7 @@ import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
 import com.example.shoppingmall.shop.dto.OrderDto;
 import com.example.shoppingmall.shop.dto.OrderProductDto;
-import com.example.shoppingmall.shop.entity.Order;
-import com.example.shoppingmall.shop.entity.OrderProduct;
-import com.example.shoppingmall.shop.entity.OrderStatus;
-import com.example.shoppingmall.shop.entity.Product;
+import com.example.shoppingmall.shop.entity.*;
 import com.example.shoppingmall.shop.repo.OrderProductRepository;
 import com.example.shoppingmall.shop.repo.OrderRepository;
 import com.example.shoppingmall.shop.repo.ProductRepository;
@@ -57,6 +54,7 @@ public class OrderService {
                 .totalPrice(dto.getCount() * product.getPrice())
                 .status(OrderStatus.PREPARING)
                 .orderDateTime(LocalDateTime.now())
+                .shop(product.getShop())
                 .user(user)
                 .build();
         Order saveOrder = orderRepository.save(newOrder);

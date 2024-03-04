@@ -18,6 +18,7 @@ public class OrderDto {
     private Integer totalPrice;
     private OrderStatus status;
     private LocalDateTime orderDateTime;
+    private Long shopId;
     private Long userId;
     private List<Long> productId;
 
@@ -30,6 +31,7 @@ public class OrderDto {
                 .totalPrice(entity.getTotalPrice())
                 .status(entity.getStatus())
                 .orderDateTime(entity.getOrderDateTime())
+                .shopId(entity.getShop().getId())
                 .userId(entity.getUser().getId())
                 .productId(productIdList)
                 .build();

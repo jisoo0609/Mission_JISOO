@@ -27,6 +27,10 @@ public class Order {
     @ManyToOne
     private UserEntity user;    // 주문한 유저
 
+    @ManyToOne
+    @JoinColumn(name = "shop_id")
+    private Shop shop;    // 주문이 발생한 Shop
+
     @ManyToMany
     @JoinTable(
             name = "order_product",
