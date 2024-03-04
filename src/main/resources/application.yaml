@@ -13,3 +13,6 @@ spring:
 
 jwt:
   secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaes
+
+toss:
+  secret: <secret-key>
