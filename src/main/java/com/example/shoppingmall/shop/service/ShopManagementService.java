@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -69,6 +71,55 @@ public class ShopManagementService {
         target.setImage(dto.getImage());
         target.setPrice(dto.getPrice());
         target.setStock(dto.getStock());
+
+        return ProductDto.fromEntity(productRepository.save(target));
+    }
+
+    // UPDATE IMAGE
+    public ProductDto updateProductImage(Long shopId, Long productId, MultipartFile image) {
+        // 업데이트할 대상 product 가져옴
+        Product target = getProduct(shopId, productId);
+
+        log.info("auth user: {}", authFacade.getAuthName());
+        String owner = target.getShop().getUser().getUsername();
+        log.info("shop Owner: {}", owner);
+        // 접근한 user와 shop의 user가 일치하는지 확인
+        if (!authFacade.getAuthName().equals(owner)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "잘못된 접근입니다.");
+        }
+
+        // 파일 업로드 위치 정하기
+        String productDir = String.format("media/Product/%d/", productId);
+        log.info(productDir);
+
+        try {
+            Files.createDirectories(Path.of(productDir));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 파일 이름 경로, 확장자 포함
+        String originalFileName = image.getOriginalFilename();
+        String[] fileNameSplit = originalFileName.split("\\.");
+        String extension = fileNameSplit[fileNameSplit.length -1];
+        String productFileName = "Product." + extension;
+        log.info(productFileName);
+
+        String productPath = productDir + productFileName;
+        log.info(productPath);
+
+        // 저장
+        try {
+            image.transferTo(Path.of(productPath));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String requestPath = String.format("/static/%d/%s", productId, productFileName);
+        log.info(requestPath);
+        target.setImage(requestPath);
 
         return ProductDto.fromEntity(productRepository.save(target));
     }

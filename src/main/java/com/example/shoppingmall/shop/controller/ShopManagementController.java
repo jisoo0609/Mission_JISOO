@@ -4,6 +4,7 @@ import com.example.shoppingmall.shop.dto.ProductDto;
 import com.example.shoppingmall.shop.service.ShopManagementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -28,6 +29,16 @@ public class ShopManagementController {
             @RequestBody ProductDto dto
     ) {
         return service.updateProduct(shopId, productId, dto);
+    }
+
+    // 쇼핑몰 상품 이미지 추가
+    @PostMapping("/{productId}/update-image")
+    public ProductDto updateProductImage(
+            @PathVariable("shopId") Long shopId,
+            @PathVariable("productId") Long productId,
+            @RequestParam("image") MultipartFile imageFile
+    ) {
+        return service.updateProductImage(shopId, productId, imageFile);
     }
 
     @DeleteMapping("/{productId}/delete")
