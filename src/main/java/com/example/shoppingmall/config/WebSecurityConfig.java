@@ -28,10 +28,12 @@ public class WebSecurityConfig {
                                         "/token/issue",
                                         "/token/validate",
                                         "/users/register",
-                                        "/users/login",
-                                        "/users/{id}/update"
+                                        "/users/login"
                                 )
                                 .permitAll()
+
+                                .requestMatchers("/users/{id}/update")
+                                .authenticated()
 
                                 .requestMatchers(
                                         "/users/{id}/request",
