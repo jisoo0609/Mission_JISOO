@@ -128,7 +128,13 @@
 								"header": [],
 								"body": {
 									"mode": "formdata",
-									"formdata": []
+									"formdata": [
+										{
+											"key": "image",
+											"type": "file",
+											"src": "/C:/Users/JISOO/Downloads/fish.png"
+										}
+									]
 								},
 								"url": {
 									"raw": "http://localhost:8080/users/2/update-image",
@@ -738,6 +744,117 @@
 					"name": "Shop",
 					"item": [
 						{
+							"name": "Admin",
+							"item": [
+								{
+									"name": "admin/{id}/accept",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/shop/admin/1/accept?flag=true",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"shop",
+												"admin",
+												"1",
+												"accept"
+											],
+											"query": [
+												{
+													"key": "flag",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "admin/{id}/close-accept",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/shop/admin/1/close-accept?flag=true",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"shop",
+												"admin",
+												"1",
+												"close-accept"
+											],
+											"query": [
+												{
+													"key": "flag",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "admin",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/shop/admin",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"shop",
+												"admin"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
 							"name": "create",
 							"request": {
 								"auth": {
@@ -882,82 +999,6 @@
 										"shop",
 										"1",
 										"close-request"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "admin/{id}/accept",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8080/shop/admin/1/accept?flag=true",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"shop",
-										"admin",
-										"1",
-										"accept"
-									],
-									"query": [
-										{
-											"key": "flag",
-											"value": "true"
-										}
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "admin/{id}/close-accept",
-							"request": {
-								"auth": {
-									"type": "bearer",
-									"bearer": [
-										{
-											"key": "token",
-											"value": "",
-											"type": "string"
-										}
-									]
-								},
-								"method": "POST",
-								"header": [],
-								"url": {
-									"raw": "http://localhost:8080/shop/admin/1/close-accept?flag=true",
-									"protocol": "http",
-									"host": [
-										"localhost"
-									],
-									"port": "8080",
-									"path": [
-										"shop",
-										"admin",
-										"1",
-										"close-accept"
-									],
-									"query": [
-										{
-											"key": "flag",
-											"value": "true"
-										}
 									]
 								}
 							},
@@ -1146,7 +1187,7 @@
 											"formdata": []
 										},
 										"url": {
-											"raw": "http://localhost:8080/shop/1/management/3/update",
+											"raw": "http://localhost:8080/shop/1/management/3/update-image",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1157,7 +1198,7 @@
 												"1",
 												"management",
 												"3",
-												"update"
+												"update-image"
 											]
 										}
 									},
@@ -1379,6 +1420,42 @@
 												{
 													"key": "name",
 													"value": "Sports"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "category?name Copy",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/search/shop?name=ex",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"search",
+												"shop"
+											],
+											"query": [
+												{
+													"key": "name",
+													"value": "ex"
 												}
 											]
 										}
