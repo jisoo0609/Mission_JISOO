@@ -14,8 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 @Slf4j
@@ -48,6 +52,52 @@ public class UsedService {
 
         log.info("newItem: {}", newItem);
         return ItemDto.fromEntity(itemRepository.save(newItem));
+    }
+
+    // 물품 이미지 추가
+    public ItemDto updateItemImage(Long id, MultipartFile image) {
+        // 물품 이미지 추가하려는 유저가 등록한 유저가 맞는지 확인
+        Item target = getItem(id);
+        log.info("register User: {}", target.getUser().getUsername());
+        log.info("auth User: {}", authFacade.getAuthName());
+        if (!target.getUser().getUsername().equals(authFacade.getAuthName())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "물건을 등록한 유저만 수정할 수 있습니다.");
+        }
+
+        // 파일 업로드 위치 정하기
+        String itemDir = String.format("media/Item/%d/", id);
+        log.info(itemDir);
+
+        try {
+            Files.createDirectories(Path.of(itemDir));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 파일 이름 경로, 확장자 포함
+        String originalFileName = image.getOriginalFilename();
+        String[] fileNameSplit = originalFileName.split("\\.");
+        String extension = fileNameSplit[fileNameSplit.length -1];
+        String itemFileName = "Item." + extension;
+        log.info(itemFileName);
+
+        String itemPath = itemDir + itemFileName;
+        log.info(itemPath);
+
+        // 저장
+        try {
+            image.transferTo(Path.of(itemPath));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String requestPath = String.format("/static/%d/%s", id, itemFileName);
+        log.info(requestPath);
+        target.setImage(requestPath);
+
+        return ItemDto.fromEntity(itemRepository.save(target));
     }
 
     // 물품 정보 조회

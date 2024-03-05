@@ -6,6 +6,7 @@ import com.example.shoppingmall.used.service.UsedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -30,8 +31,8 @@ public class UsedController {
 
     // 중고거래 물건 img 추가
     @PostMapping("/{id}/update-image")
-    public String updateImage(@PathVariable("id") Long id) {
-        return "Img Update";
+    public ItemDto updateItemImage(@PathVariable("id") Long id, @RequestParam("image") MultipartFile imageFile) {
+        return service.updateItemImage(id, imageFile);
     }
 
     // 중고거래 물품 수정

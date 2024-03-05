@@ -11,6 +11,13 @@ spring:
     database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: true
 
+
+  mvc:
+    static-path-pattern: /static/**
+  web:
+    resources:
+      static-locations: file:media/,classpath:/static
+
 jwt:
   secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaes
 
