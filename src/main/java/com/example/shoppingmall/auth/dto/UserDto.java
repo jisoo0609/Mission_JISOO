@@ -24,8 +24,8 @@ public class UserDto {
 
     private String authorities;     // 권한
 
-    public static UserEntity fromEntity(UserEntity entity) {
-        return UserEntity.builder()
+    public static UserDto fromEntity(UserEntity entity) {
+        return UserDto.builder()
                 .username(entity.getUsername())
                 .password(entity.getPassword())
                 .name(entity.getName())

@@ -28,14 +28,15 @@ public class WebSecurityConfig {
                                         "/token/issue",
                                         "/token/validate",
                                         "/users/register",
-                                        "/users/login"
+                                        "/users/login",
+                                        "/users/{id}/update"
                                 )
                                 .permitAll()
 
                                 .requestMatchers(
-                                        "/users/{id}/update",
-                                        "/users/{id}/request")
-                                .authenticated()
+                                        "/users/{id}/request",
+                                        "/users/{id}/**")
+                                .hasAnyAuthority("ROLE_USER","ROLE_BUSINESS_USER","ROLE_ADMIN")
 
                                 .requestMatchers(
                                         "/admin/list",

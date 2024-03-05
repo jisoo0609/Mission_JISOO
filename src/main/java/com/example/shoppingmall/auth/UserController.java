@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Slf4j
@@ -60,6 +61,13 @@ public class UserController {
         service.update(id, dto);
         return "UPDATE USER";
     }
+
+    // 프로필 이미지 업데이트
+    @PostMapping("/{id}/update-image")
+    public UserDto updateUserImage(@PathVariable("id") Long id, @RequestParam("image") MultipartFile imageFile) {
+        return service.updateUserImage(id, imageFile);
+    }
+
 
     // USER가 사업자로 권한 변경 신청
     @PostMapping("/{id}/request")

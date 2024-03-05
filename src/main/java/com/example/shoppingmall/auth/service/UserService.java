@@ -5,6 +5,7 @@ import com.example.shoppingmall.auth.dto.UserDto;
 import com.example.shoppingmall.auth.entity.CustomUserDetails;
 import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
+import com.example.shoppingmall.used.dto.ItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +29,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final JpaUserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
+    private final AuthenticationFacade authFacade;
 
     // 회원가입
     public void create(UserDto dto) {
@@ -31,7 +37,9 @@ public class UserService {
         UserDetails newUser = buildUserDetails(dto);
         manager.createUser(newUser);
     }
-
+    
+    // 필수 정보 추가
+    // 일반 사용자로 업데이트
     public void update(Long id, UserDto dto) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty())
@@ -49,6 +57,53 @@ public class UserService {
         manager.updateUser(updatedUser);
     }
 
+    // USER 프로필 추가
+    public UserDto updateUserImage(Long id, MultipartFile image) {
+        Optional<UserEntity> optionalUser = userRepository.findById(id);
+        if (optionalUser.isEmpty())
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        UserEntity target = optionalUser.get();
+        
+        log.info("register User: {}",target.getUsername());
+        log.info("auth User : {}", authFacade.getAuthName());
+        if (!target.getUsername().equals(authFacade.getAuthName()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
+        // 파일 업로드 위치 정하기
+        String UserDir = String.format("media/User/%d/", id);
+        log.info(UserDir);
+
+        try {
+            Files.createDirectories(Path.of(UserDir));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        // 파일 이름 경로, 확장자 포함
+        String originalFileName = image.getOriginalFilename();
+        String[] fileNameSplit = originalFileName.split("\\.");
+        String extension = fileNameSplit[fileNameSplit.length -1];
+        String userFileName = "User." + extension;
+        log.info(userFileName);
+
+        String userPath = UserDir + userFileName;
+        log.info(userPath);
+
+        // 저장
+        try {
+            image.transferTo(Path.of(userPath));
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        String requestPath = String.format("/static/%d/%s", id, userFileName);
+        log.info(requestPath);
+        target.setImage(requestPath);
+
+        return UserDto.fromEntity(userRepository.save(target));
+    }
 
     // USER가 BusinessNumber를 추가
     // 사업자로 권한 변경 신청
