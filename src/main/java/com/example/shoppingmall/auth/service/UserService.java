@@ -5,7 +5,6 @@ import com.example.shoppingmall.auth.dto.UserDto;
 import com.example.shoppingmall.auth.entity.CustomUserDetails;
 import com.example.shoppingmall.auth.entity.UserEntity;
 import com.example.shoppingmall.auth.repo.UserRepository;
-import com.example.shoppingmall.used.dto.ItemDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,34 +26,42 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final JpaUserDetailsManager manager;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationFacade authFacade;
 
     // 회원가입
-    public void create(UserDto dto) {
-        dto.setAuthorities("ROLE_INACTIVE_USER");
-        UserDetails newUser = buildUserDetails(dto);
-        manager.createUser(newUser);
+    public UserDto create(UserDto dto) {
+        UserEntity newUser = UserEntity.builder()
+                .username(dto.getUsername())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .authorities("ROLE_INACTIVE_USER")
+                .build();
+
+        return UserDto.fromEntity(userRepository.save(newUser));
     }
     
     // 필수 정보 추가
     // 일반 사용자로 업데이트
-    public void update(Long id, UserDto dto) {
+    public UserDto update(Long id, UserDto dto) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         UserEntity target = optionalUser.get();
+
+        log.info("register User: {}",target.getUsername());
+        log.info("auth User : {}", authFacade.getAuthName());
+        if (!target.getUsername().equals(authFacade.getAuthName()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
         target.setName(dto.getName());
         target.setNickname(dto.getNickname());
         target.setAge(dto.getAge());
         target.setEmail(dto.getEmail());
         target.setPhone(dto.getPhone());
 
-        dto.setAuthorities("ROLE_USER");
-        UserDetails updatedUser = buildUserDetails(dto);
-        manager.updateUser(updatedUser);
+        target.setAuthorities("ROLE_USER");
+
+        return UserDto.fromEntity(userRepository.save(target));
     }
 
     // USER 프로필 추가
@@ -107,15 +114,21 @@ public class UserService {
 
     // USER가 BusinessNumber를 추가
     // 사업자로 권한 변경 신청
-    public void requestBusiness(Long id, UserDto dto) {
+    public UserDto requestBusiness(Long id, UserDto dto) {
         Optional<UserEntity> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty())
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         UserEntity target = optionalUser.get();
+
+        // 사용자가 일치하는지 확인
+        log.info("register User: {}",target.getUsername());
+        log.info("auth User : {}", authFacade.getAuthName());
+        if (!target.getUsername().equals(authFacade.getAuthName()))
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+
         target.setBusinessNumber(dto.getBusinessNumber());
 
-        userRepository.save(target);
+        return UserDto.fromEntity(userRepository.save(target));
     }
 
     @Transactional
@@ -133,7 +146,6 @@ public class UserService {
             }
         }
     }
-
 
     // 관리자가 사용자 전환 신청 목록 확인
     public List<UserEntity> checkRequestList() {

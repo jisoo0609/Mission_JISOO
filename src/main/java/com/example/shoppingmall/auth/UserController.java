@@ -48,18 +48,16 @@ public class UserController {
     // 회원가입
     // USER CREATE
     @PostMapping("/register")
-    public String createUser(@RequestBody UserDto dto) {
-        service.create(dto);
-        return "SUCCESS";
+    public UserDto createUser(@RequestBody UserDto dto) {
+        return service.create(dto);
     }
 
     // USER UPDATE
     @PostMapping("/{id}/update")
-    public String updateUser(
+    public UserDto updateUser(
             @PathVariable("id") Long id, @RequestBody UserDto dto)
     {
-        service.update(id, dto);
-        return "UPDATE USER";
+       return service.update(id, dto);
     }
 
     // 프로필 이미지 업데이트
@@ -71,10 +69,9 @@ public class UserController {
 
     // USER가 사업자로 권한 변경 신청
     @PostMapping("/{id}/request")
-    public String requestBusiness(
+    public UserDto requestBusiness(
             @PathVariable("id") Long id, @RequestBody UserDto dto)
     {
-        service.requestBusiness(id, dto);
-        return "request Role Change To Business";
+        return service.requestBusiness(id, dto);
     }
 }

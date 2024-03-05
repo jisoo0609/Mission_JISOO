@@ -26,6 +26,7 @@ public class UserDto {
 
     public static UserDto fromEntity(UserEntity entity) {
         return UserDto.builder()
+                .id(entity.getId())
                 .username(entity.getUsername())
                 .password(entity.getPassword())
                 .name(entity.getName())
@@ -34,6 +35,7 @@ public class UserDto {
                 .email(entity.getEmail())
                 .phone(entity.getPhone())
                 .image(entity.getImage())
+                .businessNumber(entity.getBusinessNumber())
                 .authorities(entity.getAuthorities())
                 .build();
     }

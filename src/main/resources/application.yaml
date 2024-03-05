@@ -22,4 +22,4 @@ jwt:
   secret: aaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaesoioegwaaaabbbsdifqbvaes
 
 toss:
-  secret: test_sk_Gv6LjeKD8aBomAEmDYbN3wYxAdXy
+  secret: <secret-key>
