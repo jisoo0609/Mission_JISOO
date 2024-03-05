@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -132,6 +133,15 @@ public class ShopService {
         log.info("reason: {}", shop.getCloseReason());
         shopRepository.save(shop);
         return shop.getCloseReason();
+    }
+
+    // 개설 신청된 쇼핑몰 목록 확인
+    public List<ShopDto> openRequestShopList() {
+        List<Shop> requestList = shopRepository.findByStatusEquals(ShopStatus.SUBMITTED);
+
+        return requestList.stream()
+                .map(ShopDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     // 관리자가 개설 허가 또는 거절

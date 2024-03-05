@@ -6,11 +6,19 @@ import com.example.shoppingmall.shop.service.ShopService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/shop/admin")
 @RequiredArgsConstructor
 public class ShopAdminController {
     private final ShopService service;
+
+    // 개설 신청된 쇼핑몰 목록 확인
+    @GetMapping
+    public List<ShopDto> openRequestShopList() {
+        return service.openRequestShopList();
+    }
 
     // 쇼핑몰 개설 허가 / 불허
     @PostMapping("/{id}/accept")

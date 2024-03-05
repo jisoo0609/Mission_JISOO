@@ -418,6 +418,15 @@ Postman에서  `RequestBody`로 `username`과 `password` 를 전달해야 한다
 
 ## Shop Admin
 
+### 개설 요청 쇼핑몰 리스트
+
+`/shop/admin`에서 관리자는 개설 신청한 쇼핑몰의 목록을 확인할 수 있다.
+
+해당 `url`은 관리자의 접근만 가능하기 때문에, Postman의 Authorization에 관리자의 토큰을 적절하게 입력해야 한다.
+
+`shop`의 상태가 `SUBMITTED`인 쇼핑몰의 목록을 확인할 수 있다.
+
+
 ### 쇼핑몰 개설 허가 / 거절
 
 `/shop/admin/{id}/accept`에서 관리자는 쇼핑몰의 개설을 허가하거나 개설을 거절할 수 있다.
